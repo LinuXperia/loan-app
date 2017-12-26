@@ -1,0 +1,328 @@
+.dataTables_wrapper {
+  border: 1px solid #ebebeb;
+  -webkit-border-radius: 3px;
+  -webkit-background-clip: padding-box;
+  -moz-border-radius: 3px;
+  -moz-background-clip: padding;
+  border-radius: 3px;
+  background-clip: padding-box;
+}
+.dataTables_wrapper > div {
+  padding: 10px;
+}
+.dataTables_wrapper > div label {
+  margin-bottom: 0;
+  font-weight: normal;
+  color: #949494;
+}
+.dataTables_wrapper > div.dataTables_length,
+.dataTables_wrapper > div.dataTables_filter,
+.dataTables_wrapper > div.dataTables_info,
+.dataTables_wrapper > div.dataTables_processing,
+.dataTables_wrapper > div.dataTables_paginate {
+  color: #949494;
+}
+.dataTables_wrapper > div input[type="text"],
+.dataTables_wrapper > div input[type="search"],
+.dataTables_wrapper > div input[type="numbeer"] {
+  background: #fff;
+  border: 1px solid #ebebeb;
+  padding: 6px 10px;
+  outline: 0;
+}
+.dataTables_wrapper > div.dataTables_filter {
+  padding-top: 15px;
+}
+.dataTables_wrapper > div .select2-container {
+  display: inline-block;
+  min-width: 85px;
+  margin: 0 10px;
+}
+@media screen and (max-width: 768px) {
+  .dataTables_wrapper > div .select2-container .select2-choice {
+    padding-left: 0;
+    padding-right: 15px;
+  }
+}
+.dataTables_wrapper > table.dataTable {
+  border-left: 0;
+  border-right: 0;
+}
+.dataTables_wrapper > table.dataTable.no-footer {
+  border-bottom: 1px solid #ebebeb;
+}
+.dataTables_wrapper > table.dataTable .sorting_disabled {
+  padding-left: 10px;
+}
+.dataTables_wrapper > table.dataTable thead td,
+.dataTables_wrapper > table.dataTable tbody td,
+.dataTables_wrapper > table.dataTable tfoot td,
+.dataTables_wrapper > table.dataTable thead th,
+.dataTables_wrapper > table.dataTable tbody th,
+.dataTables_wrapper > table.dataTable tfoot th {
+  border-right: 0;
+  border-bottom: 0;
+}
+.dataTables_wrapper > table.dataTable thead > tr > td:first-child,
+.dataTables_wrapper > table.dataTable tbody > tr > td:first-child,
+.dataTables_wrapper > table.dataTable tfoot > tr > td:first-child,
+.dataTables_wrapper > table.dataTable thead > tr > th:first-child,
+.dataTables_wrapper > table.dataTable tbody > tr > th:first-child,
+.dataTables_wrapper > table.dataTable tfoot > tr > th:first-child {
+  border-left: 0;
+}
+.dataTables_wrapper > table.dataTable tfoot th,
+.dataTables_wrapper > table.dataTable tfoot td {
+  border-top-color: #ebebeb;
+}
+.dataTables_wrapper .dataTables_paginate {
+  border: 1px solid #ebebeb;
+  padding: 0 !important;
+  margin: 10px;
+}
+.dataTables_wrapper .dataTables_paginate .paginate_button {
+  padding: 0;
+  background-color: #fff;
+  border: 0 !important;
+  margin: 0 !important;
+  color: #949494 !important;
+  outline: 0;
+  -webkit-border-radius: 0 !important;
+  -webkit-background-clip: padding-box !important;
+  -moz-border-radius: 0 !important;
+  -moz-background-clip: padding !important;
+  border-radius: 0 !important;
+  background-clip: padding-box !important;
+}
+.dataTables_wrapper .dataTables_paginate .paginate_button.previous {
+  border-right: 1px solid #ebebeb !important;
+}
+.dataTables_wrapper .dataTables_paginate .paginate_button:active {
+  -webkit-box-shadow: none !important;
+  -moz-box-shadow: none !important;
+  box-shadow: none !important;
+}
+.dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+  background: #fafafa !important;
+}
+.page-body .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+  color: #373e4a !important;
+}
+.dataTables_wrapper .dataTables_paginate span {
+  padding: 0;
+  margin: 0;
+}
+.dataTables_wrapper .dataTables_paginate span .ellipsis + .paginate_button {
+  border-left: 1px solid #ebebeb !important;
+}
+.dataTables_wrapper .dataTables_paginate span .paginate_button {
+  margin: 0;
+  background: #fff !important;
+  border-right: 1px solid #ebebeb !important;
+}
+.dataTables_wrapper .dataTables_paginate span .paginate_button.current {
+  background: #262b34 !important;
+  color: #fff !important;
+}
+.page-body .dataTables_wrapper .dataTables_paginate span .paginate_button.current:hover {
+  color: #fff !important;
+}
+.dataTables_wrapper .dataTables_info {
+  padding-top: 18px !important;
+}
+.dataTables_wrapper .dt-buttons .dt-button {
+  background: #fff;
+  border: 1px solid #ebebeb;
+  margin: 0;
+  font-size: 12px;
+  -webkit-border-radius: 0px;
+  -webkit-background-clip: padding-box;
+  -moz-border-radius: 0px;
+  -moz-background-clip: padding;
+  border-radius: 0px;
+  background-clip: padding-box;
+}
+.dataTables_wrapper .dt-buttons .dt-button:hover {
+  background: #fafafa;
+  border-color: #ebebeb;
+}
+.dataTables_wrapper .dt-buttons .dt-button + .dt-button {
+  border-left: 0;
+}
+.dataTables_wrapper .dt-buttons > .dt-button:first-child {
+  -webkit-border-radius: 3px 0 0 3px;
+  -webkit-background-clip: padding-box;
+  -moz-border-radius: 3px 0 0 3px;
+  -moz-background-clip: padding;
+  border-radius: 3px 0 0 3px;
+  background-clip: padding-box;
+}
+.dataTables_wrapper .dt-buttons > .dt-button:last-child {
+  -webkit-border-radius: 0 3px 3px 0;
+  -webkit-background-clip: padding-box;
+  -moz-border-radius: 0 3px 3px 0;
+  -moz-background-clip: padding;
+  border-radius: 0 3px 3px 0;
+  background-clip: padding-box;
+}
+/*!
+ * DataTables + Font Awesome integration
+ * License: MIT - http://datatables.net/license
+ */
+table.dataTable thead th {
+  position: relative;
+  background-image: none !important;
+  /* Remove the DataTables bootstrap integration styling */
+}
+table.dataTable thead th.sorting:after,
+table.dataTable thead th.sorting_asc:after,
+table.dataTable thead th.sorting_desc:after {
+  position: absolute;
+  top: 50% !important;
+  right: 8px;
+  display: block;
+  font-family: Entypo;
+  -webkit-transform: translateY(-50%);
+  -moz-transform: translateY(-50%);
+  -ms-transform: translateY(-50%);
+  -o-transform: translateY(-50%);
+  transform: translateY(-50%);
+}
+table.dataTable thead th.sorting:after {
+  content: "\e834";
+  color: #ddd;
+  font-size: 0.8em;
+  padding-top: 0.12em;
+  -webkit-transform: translateY(-50%) rotate(90deg);
+  -moz-transform: translateY(-50%) rotate(90deg);
+  -ms-transform: translateY(-50%) rotate(90deg);
+  -o-transform: translateY(-50%) rotate(90deg);
+  transform: translateY(-50%) rotate(90deg);
+}
+table.dataTable thead th.sorting_asc:after {
+  content: "\e876";
+  -webkit-transform: translateY(-50%) rotate(0deg);
+  -moz-transform: translateY(-50%) rotate(0deg);
+  -ms-transform: translateY(-50%) rotate(0deg);
+  -o-transform: translateY(-50%) rotate(0deg);
+  transform: translateY(-50%) rotate(0deg);
+}
+table.dataTable thead th.sorting_desc:after {
+  content: "\e873";
+  -webkit-transform: translateY(-50%) rotate(0deg);
+  -moz-transform: translateY(-50%) rotate(0deg);
+  -ms-transform: translateY(-50%) rotate(0deg);
+  -o-transform: translateY(-50%) rotate(0deg);
+  transform: translateY(-50%) rotate(0deg);
+}
+div.dataTables_scrollBody table.dataTable thead th.sorting:after,
+div.dataTables_scrollBody table.dataTable thead th.sorting_asc:after,
+div.dataTables_scrollBody table.dataTable thead th.sorting_desc:after {
+  content: "";
+}
+/* In Bootstrap and Foundation the padding top is a little different from the DataTables stylesheet */
+table.table thead th.sorting:after,
+table.table thead th.sorting_asc:after,
+table.table thead th.sorting_desc:after {
+  top: 8px;
+}
+/*
+ * DataTables style pagination controls
+ */
+div.dataTables_paginate a.paginate_button.first,
+div.dataTables_paginate a.paginate_button.previous {
+  position: relative;
+  padding-left: 24px;
+}
+div.dataTables_paginate a.paginate_button.next,
+div.dataTables_paginate a.paginate_button.last {
+  position: relative;
+  padding-right: 24px;
+}
+div.dataTables_paginate a.first:before,
+div.dataTables_paginate a.previous:before {
+  position: absolute;
+  top: 50%;
+  left: 10px;
+  display: block;
+  -webkit-transform: translateY(-50%);
+  -moz-transform: translateY(-50%);
+  -ms-transform: translateY(-50%);
+  -o-transform: translateY(-50%);
+  transform: translateY(-50%);
+  font-family: Entypo;
+}
+div.dataTables_paginate a.next:after,
+div.dataTables_paginate a.last:after {
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  display: block;
+  -webkit-transform: translateY(-50%);
+  -moz-transform: translateY(-50%);
+  -ms-transform: translateY(-50%);
+  -o-transform: translateY(-50%);
+  transform: translateY(-50%);
+  font-family: Entypo;
+}
+div.dataTables_paginate a.first:before {
+  content: "\e880";
+}
+div.dataTables_paginate a.previous:before {
+  content: "\e874";
+}
+div.e875 a.next:after,
+div.dataTables_paginate a.next:after {
+  content: "\e875";
+}
+div.dataTables_paginate a.last:after {
+  content: "\e881";
+}
+/*
+ * Bootstrap and foundation style pagination controls
+ */
+div.dataTables_paginate li.first > a,
+div.dataTables_paginate li.previous > a {
+  position: relative;
+  padding-left: 24px;
+}
+div.dataTables_paginate li.next > a,
+div.dataTables_paginate li.last > a {
+  position: relative;
+  padding-right: 24px;
+}
+div.dataTables_paginate li.first a:before,
+div.dataTables_paginate li.previous a:before {
+  position: absolute;
+  top: 6px;
+  left: 10px;
+  display: block;
+  font-family: Entypo;
+}
+div.dataTables_paginate li.next a:after,
+div.dataTables_paginate li.last a:after {
+  position: absolute;
+  top: 6px;
+  right: 10px;
+  display: block;
+  font-family: Entypo;
+}
+div.dataTables_paginate li.first a:before {
+  content: "\f100";
+}
+div.dataTables_paginate li.previous a:before {
+  content: "\e874";
+}
+div.dataTables_paginate li.next a:after {
+  content: "\e875";
+}
+div.dataTables_paginate li.last a:after {
+  content: "\e881";
+}
+/* In Foundation we don't want the padding like in bootstrap */
+div.columns div.dataTables_paginate li.first a:before,
+div.columns div.dataTables_paginate li.previous a:before,
+div.columns div.dataTables_paginate li.next a:after,
+div.columns div.dataTables_paginate li.last a:after {
+  top: 0;
+}

@@ -1,0 +1,22 @@
+.step-title h4{
+  font-size: 15px !important;
+}
+
+h5.step-subtitle{
+  font-size: 12px;
+}
+.stepper-box{
+  .top{
+    margin-bottom: 50px;
+    .steps-wrapper{
+      .step{
+        .circle{
+          i{
+              background-color: $brand-primary !important;
+              padding: .4rem !important;
+            }
+          }
+        }
+      }
+    }
+  }

@@ -188,7 +188,7 @@
                                <option value="divorced">DIVORCED</option>
                                <option value="windowed">WINDOWED</option>
                            </select>
-                           <small v-if="errors.address" class="invalid-feedback">
+                           <small v-if="errors.marital" class="invalid-feedback">
                                {{ errors.marital[0]}}
                            </small>
                        </div>

@@ -31,10 +31,30 @@
                     </div>
                 </div>
                 <div class="tab-pane" id="kin" role="tabpanel">
-                    <h1>Next Of Kin</h1>
+                    <div class="card">
+                        <div class="card-header">
+                            <strong>Borrower Next of Details</strong>
+                        </div>
+
+                        <next-of-kin-details
+                                kin-details = "{{ $nextOfKinDetails }}"
+                        >
+
+                        </next-of-kin-details>
+                    </div>
                 </div>
                 <div class="tab-pane" id="bank" role="tabpanel">
-                    <h1>Bank Details</h1>
+                    <div class="card">
+                        <div class="card-header">
+                            <strong>Borrower Bank Details</strong>
+                        </div>
+
+                        <bank-details
+                                bank-details = "{{ $bankDetails }}"
+                        >
+
+                        </bank-details>
+                    </div>
                 </div>
             </div>
         </div>

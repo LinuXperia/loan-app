@@ -7,6 +7,7 @@ use App\BorrowerNextOfKin;
 use App\BorrowerPersonalDetails;
 use App\BorrowerResidenceDetails;
 use App\BorrowerWorkDetails;
+use App\Http\Requests\Borrower\NextOfKinRequest;
 use App\RefereesDetails;
 use App\Role;
 use App\User;
@@ -83,12 +84,58 @@ class BorrowerController extends Controller
 
     }
 
+    /**
+     * validate and update personal details
+     * @param PersonalDetails $request
+     */
+    public function updatePersonalDetails(PersonalDetails $request){
+
+        //get user
+        if(!$request->id){
+            return response()->json([
+                'message' => 'no user found',
+            ], 406);
+        }
+
+        $userDetails = BorrowerPersonalDetails::where('user_id', $request->id)->first();
+
+        if(!$userDetails){
+            return response()->json([
+
+                'message' => 'no user found',
+            ], 406);
+        }
+
+        $userDetails->title = $request->title !==  $userDetails->title ? $request->title : $userDetails->title;
+        $userDetails->fname = $request->fname !==  $userDetails->fname ? $request->fname : $userDetails->fname;
+        $userDetails->sname = $request->sname !==  $userDetails->sname ? $request->sname : $userDetails->sname;
+        $userDetails->lname = $request->lname !==  $userDetails->lname ? $request->lname : $userDetails->lname;;
+        $userDetails->nationality = $request->nationality !==  $userDetails->nationality ? $request->nationality : $userDetails->nationality;
+        $userDetails->idNumber = $request->idNumber !==  $userDetails->idNumber ? $request->idNumber : $userDetails->idNumber;
+        $userDetails->pin = $request->pin !==  $userDetails->pin ? $request->pin : $userDetails->pin;
+        $userDetails->mobile = $request->mobile !==  $userDetails->mobile ? $request->mobile : $userDetails->mobile;
+        $userDetails->telephone = $request->telephone !==  $userDetails->telephone ? $request->telephone : $userDetails->telephone;
+        $userDetails->dob = $request->dob !==  $userDetails->dob ? $request->dob : $userDetails->dob;
+        $userDetails->address = $request->address !==  $userDetails->address ? $request->address : $userDetails->address;
+        $userDetails->office = $request->office !==  $userDetails->office ? $request->office : $userDetails->office;
+        $userDetails->home = $request->home !==  $userDetails->home ? $request->home : $userDetails->home;
+        $userDetails->marital = $request->marital !==  $userDetails->marital ? $request->marital : $userDetails->marital;
+        $userDetails->education = $request->education !==  $userDetails->education ? $request->education : $userDetails->education;
+
+        $userDetails->save();
+
+        //return user
+        return response()->json([
+            'data' => $userDetails
+        ], 200);
+    }
+
 
     /**
      *post next of kin details
      * @param Request $request
      */
-    public function nextOfKin(Request $request){
+    public function nextOfKin(NextOfKinRequest $request){
 
         //get user
         if(!$request->id){
@@ -106,16 +153,6 @@ class BorrowerController extends Controller
             ], 406);
         }
 
-        //validate
-
-        $request->validate([
-            'name' => 'required',
-            'relationship' => 'required',
-            'phone' => 'required|numeric',
-            'email' => 'required|email',
-            'address' => 'required',
-        ]);
-
         $details = new BorrowerNextOfKin();
 
         $details->name = $request->name;
@@ -129,6 +166,44 @@ class BorrowerController extends Controller
         return response()->json([
 
             'id' => $user->id,
+        ], 200);
+    }
+
+    /**
+     *post next of kin details
+     * @param Request $request
+     */
+    public function updateNextOfKin(NextOfKinRequest $request){
+
+        //get user
+        if(!$request->id){
+            return response()->json([
+                'message' => 'no user found',
+            ], 406);
+        }
+
+        $user = User::findOrFail($request->id);
+
+        if(!$user){
+            return response()->json([
+
+                'message' => 'no user found',
+            ], 406);
+        }
+
+        $details = BorrowerNextOfKin::where('user_id',$request->id)->first();
+
+        $details->name = $request->name !==  $details->name ? $request->name : $details->name;
+        $details->relationship = $request->relationship !==  $details->relationship ? $request->relationship : $details->relationship;
+        $details->phone = $request->phone !==  $details->phone ? $request->phone : $details->phone;
+        $details->email = $request->email !==  $details->email ? $request->email : $details->email;
+        $details->address = $request->address !==  $details->address ? $request->address : $details->address;
+
+        $details->save();
+
+        return response()->json([
+
+            'id' => $details,
         ], 200);
     }
 
@@ -492,9 +567,17 @@ class BorrowerController extends Controller
     **/
     public function getBorrowerDetails($id){
 
+        $personalDetails = User::findOrFail($id)->borrowerPersonalDetails;
+        $personalDetails->email = User::findOrFail($id)->email;
+
+        $nextOfKinDetails = User::findOrFail($id)->borrowerNextOfKin;
+        $bankDetails = User::findOrFail($id)->borrowerBankDetails;
+
         $data = [
             'page' => 'borrower details',
-            'personalDetails' => User::findOrFail($id)->borrowerPersonalDetails
+            'personalDetails' => $personalDetails,
+            'nextOfKinDetails' => $nextOfKinDetails,
+            'bankDetails' => $bankDetails
         ];
 
 

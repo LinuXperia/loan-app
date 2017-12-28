@@ -61,8 +61,14 @@ Route::group(['prefix' => 'borrower', 'namespace' => 'Borrower', 'middleware' =>
     //post personal details form vue
     Route::post('/borrower-personal-details', 'BorrowerController@personalDetails')->name('borrower.personalDetails');
 
+    //update personal details form vue
+    Route::put('/update-borrower-personal-details', 'BorrowerController@updatePersonalDetails')->name('borrower.updatePersonalDetails');
+
     //post borrower next of kin
     Route::post('/borrower-next-of-kin', 'BorrowerController@nextOfKin')->name('borrower.nextOfKin');
+
+    //update borrower next of kin
+    Route::put('/update-borrower-next-of-kin', 'BorrowerController@updateNextOfKin')->name('borrower.updateNextOfKin');
 
     //post borrower bank details
     Route::post('/borrower-bank-details', 'BorrowerController@bankDetails')->name('borrower.bankDetails');

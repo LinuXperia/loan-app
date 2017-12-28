@@ -25,6 +25,8 @@ Vue.component('new-borrower', require('./borrower/components/new/New.vue'));
 
 //borrower details components
 Vue.component('personal-details', require('./borrower/components/show/PersonalDetails.vue'))
+Vue.component('next-of-kin-details', require('./borrower/components/show/NextOfKinDetails.vue'))
+Vue.component('bank-details', require('./borrower/components/show/BankDetails.vue'))
 
 const app = new Vue({
     el: '#app'

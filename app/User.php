@@ -57,6 +57,10 @@ class User extends Authenticatable
         return $this->hasMany(RefereesDetails::class);
     }
 
+    public function loans(){
+        return $this->hasMany(Loan::class);
+    }
+
     /**
     *Registered by scope
     **/

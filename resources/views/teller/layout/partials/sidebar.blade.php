@@ -27,7 +27,7 @@
                 <a class="nav-link nav-dropdown-toggle" href="#"><i class="icon-layers"></i> Loans Details</a>
                 <ul class="nav-dropdown-items">
                     <li class="nav-item">
-                        <a class="nav-link" href="#"><i class="icon-plus"></i> New Loan</a>
+                        <a class="nav-link" href="{{ route('loans.index') }}"><i class="icon-plus"></i> New Loan</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#"><i class="icon-list"></i> list Loans</a>

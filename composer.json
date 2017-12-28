@@ -6,9 +6,11 @@
     "type": "project",
     "require": {
         "php": ">=7.0.0",
-        "doctrine/dbal": "^2.5",
+        "algolia/algoliasearch-client-php": "^1.25",
+        "doctrine/dbal": "^2.6",
         "fideloper/proxy": "~3.3",
         "laravel/framework": "5.5.*",
+        "laravel/scout": "^3.0",
         "laravel/tinker": "~1.0",
         "yajra/laravel-datatables-html": "^3.0",
         "yajra/laravel-datatables-oracle": "~8.0"

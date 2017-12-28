@@ -35,7 +35,7 @@
 
             <div class="container-fluid">
                 <div class="animated fadeIn">
-
+                    @include('teller.layout.partials._flash')
                     @yield('content')
 
                 </div>

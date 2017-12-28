@@ -10,8 +10,10 @@ require('./bootstrap');
 
 window.Vue = require('vue');
 
-import VueLocalStorage from 'vue-localstorage'
+import InstantSearch from 'vue-instantsearch';
+Vue.use(InstantSearch);
 
+import VueLocalStorage from 'vue-localstorage'
 Vue.use(VueLocalStorage)
 
 
@@ -21,12 +23,17 @@ Vue.use(VueLocalStorage)
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 
+//create new borrower
 Vue.component('new-borrower', require('./borrower/components/new/New.vue'));
 
-//borrower details components
+//borrower show and editdetails components
 Vue.component('personal-details', require('./borrower/components/show/PersonalDetails.vue'))
 Vue.component('next-of-kin-details', require('./borrower/components/show/NextOfKinDetails.vue'))
 Vue.component('bank-details', require('./borrower/components/show/BankDetails.vue'))
+
+//borrower loan details
+Vue.component('loan-details', require('./borrower/components/loan/New.vue'))
+
 
 const app = new Vue({
     el: '#app'

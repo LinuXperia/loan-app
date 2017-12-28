@@ -96,4 +96,24 @@ Route::group(['prefix' => 'borrower', 'namespace' => 'Borrower', 'middleware' =>
 
     //borrower Details
     Route::get('/details/{id}', 'BorrowerController@getBorrowerDetails')->name('borrower.details');
+
+});
+
+/**
+===============================================================================
+ ****************************LOAN ROUTES**************************************
+===============================================================================
+ **/
+
+Route::group(['prefix' => 'loans', 'namespace' => 'Loans', 'middleware' => ['auth','role:teller,admin']], function () {
+
+    //search loan borrower
+    Route::get('/index', 'LoansController@index')->name('loans.index');
+
+    //search loan borrower
+    Route::get('/{id}', 'LoansController@newLoan')->name('loan.new');
+
+    //post loan details
+    Route::post('/loan-details', 'LoansController@setLoanDetails')->name('loan.details');
+
 });

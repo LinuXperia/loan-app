@@ -58,7 +58,7 @@ Route::group(['prefix' => 'borrower', 'namespace' => 'Borrower', 'middleware' =>
     //new borrower
     Route::get('/new-borrower', 'BorrowerController@newBorrower')->name('new.borrower');
 
-    //post personal details form vues
+    //post personal details form vue
     Route::post('/borrower-personal-details', 'BorrowerController@personalDetails')->name('borrower.personalDetails');
 
     //post borrower next of kin
@@ -86,5 +86,8 @@ Route::group(['prefix' => 'borrower', 'namespace' => 'Borrower', 'middleware' =>
     Route::get('/list-of-borrowers', 'BorrowerController@borrowerList')->name('borrower.list');
 
     //borrower list
-        Route::get('/get-borrower-list', 'BorrowerController@getBorrowerList')->name('getBorrowerList');
+    Route::get('/get-borrower-list', 'BorrowerController@getBorrowerList')->name('getBorrowerList');
+
+    //borrower Details
+    Route::get('/details/{id}', 'BorrowerController@getBorrowerDetails')->name('borrower.details');
 });

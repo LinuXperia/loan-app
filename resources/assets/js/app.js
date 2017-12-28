@@ -5,6 +5,7 @@
  * building robust, powerful web applications using Vue and Laravel.
  */
 
+
 require('./bootstrap');
 
 window.Vue = require('vue');
@@ -20,7 +21,10 @@ Vue.use(VueLocalStorage)
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 
-Vue.component('new-borrower', require('./borrower/components/New.vue'));
+Vue.component('new-borrower', require('./borrower/components/new/New.vue'));
+
+//borrower details components
+Vue.component('personal-details', require('./borrower/components/show/PersonalDetails.vue'))
 
 const app = new Vue({
     el: '#app'

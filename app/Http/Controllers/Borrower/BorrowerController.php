@@ -15,6 +15,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Borrower\PersonalDetails;
 use Illuminate\Support\Facades\Auth;
 use Yajra\DataTables\DataTables;
+use Yajra\DataTables\Html\Builder;
 
 class BorrowerController extends Controller
 {
@@ -432,21 +433,72 @@ class BorrowerController extends Controller
     /**
      * Borrower list view
      **/
-    public function borrowerList(){
+    public function borrowerList(Builder $builder){
+
+        if (request()->ajax()) {
+
+            $model = User::withRole('borrower')->get();
+
+            foreach ($model as $m){
+                $m->registered_by = User::registeredBy($m->registered_by);
+                $m->idNumber = User::find($m->id)->borrowerPersonalDetails()->first()->idNumber;
+                $m->mobile = User::find($m->id)->borrowerPersonalDetails()->first()->mobile;
+
+            }
+
+            return DataTables::of($model)
+                ->addColumn('action', function ($model) {
+                        return '<a href="details/'.$model->id.'" class="btn btn-xs btn-outline-info"> More Details</a>';
+                    })
+                ->editColumn('id', 'ID: {{$id}}')
+                ->toJson();
+        }
 
         $data = [
             'page' => 'borrower list'
         ];
-        return view('teller.borrower.borrowerList', $data);
+
+        $html = $builder->columns([
+
+                ['data' => 'name', 'name' => 'name', 'title' => 'Sur Name'],
+                ['data' => 'email', 'name' => 'email', 'title' => 'Email'],
+                [
+                    'data' => 'idNumber',
+                    'name' => 'idNumber',
+                    'title' => 'ID Number',
+                ],
+                [
+                    'data' => 'complete',
+                    'name' => 'complete',
+                    'title' => 'Complete',
+                    'render' => 'function(){
+                    
+                                     return data == \'1\' ? \'complete\' : \'incomplete\'
+                                }',
+                ],
+                ['data' => 'mobile', 'name' => 'mobile', 'title' => 'Phone No.'],
+
+                ['data' => 'created_at', 'name' => 'created_at', 'title' => 'Created At'],
+                ['data' => 'action', 'name' => 'action', 'title' => 'Action'],
+
+            ]);
+
+        return view('teller.borrower.borrowerList')->with(compact('html'))->with($data);
+
     }
 
     /**
-     * Borrower list
-     **/
-    public function getBorrowerList(){
+    * Borrower details view
+    **/
+    public function getBorrowerDetails($id){
 
-        $users = User::select(['name','email','created_at']);
+        $data = [
+            'page' => 'borrower details',
+            'personalDetails' => User::findOrFail($id)->borrowerPersonalDetails
+        ];
 
-        return Datatables::of($users)->make();
+
+        return view('teller.borrower.borrowerDetails')->with($data);
     }
+
 }

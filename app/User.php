@@ -5,6 +5,7 @@ namespace App;
 use App\Http\Requests\Borrower\PersonalDetails;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use PhpParser\Builder;
 use Zizaco\Entrust\Traits\EntrustUserTrait;
 
 class User extends Authenticatable
@@ -54,5 +55,27 @@ class User extends Authenticatable
 
     public function refereesDetails(){
         return $this->hasMany(RefereesDetails::class);
+    }
+
+    /**
+    *Registered by scope
+    **/
+    public function scopeRegisteredBy($query, $id){
+
+        return $query->where('id', $id)->first()->email;
+    }
+
+    /**
+     *Filtering users according to their role
+     *
+     *@param string $role
+     *@return users collection
+     */
+    public function scopeWithRole($query, $role)
+    {
+        return $query->whereHas('roles', function ($query) use ($role)
+        {
+            $query->where('name', $role);
+        });
     }
 }

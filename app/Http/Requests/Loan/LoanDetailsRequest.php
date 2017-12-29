@@ -24,8 +24,8 @@ class LoanDetailsRequest extends FormRequest
     public function rules()
     {
         return [
-            'amount'  => 'required|integer',
-            'rate'  => 'required|integer',
+            'amount'  => 'required|integer|min:1000',
+            'rate'  => 'required|integer|min:1|max:100',
             'type'  => 'required',
             'duration'  => 'required|between:1,3',
             'payment_date'  => 'required|date',

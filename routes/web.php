@@ -116,4 +116,10 @@ Route::group(['prefix' => 'loans', 'namespace' => 'Loans', 'middleware' => ['aut
     //post loan details
     Route::post('/loan-details', 'LoansController@setLoanDetails')->name('loan.details');
 
+    //post loan details
+    Route::post('/loan-details-update', 'LoansController@updateLoanDetails')->name('loan.update.details');
+
+    //loan upload
+    Route::post('/upload', 'LoansController@fileUpload')->name('loan.fileUpload');
+
 });

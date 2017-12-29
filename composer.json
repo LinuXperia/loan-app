@@ -12,6 +12,7 @@
         "laravel/framework": "5.5.*",
         "laravel/scout": "^3.0",
         "laravel/tinker": "~1.0",
+        "webpatser/laravel-uuid": "^3.0",
         "yajra/laravel-datatables-html": "^3.0",
         "yajra/laravel-datatables-oracle": "~8.0"
     },

@@ -61,6 +61,11 @@ class User extends Authenticatable
         return $this->hasMany(Loan::class);
     }
 
+    public function payments(){
+
+        return $this->hasManyThrough('App\Payment', 'App\Loan');
+    }
+
     /**
     *Registered by scope
     **/

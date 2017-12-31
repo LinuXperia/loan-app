@@ -9643,6 +9643,22 @@ h5.step-subtitle {
   padding: .4rem !important;
 }
 
+table.dataTable thead .sorting_asc:before,
+table.dataTable thead .sorting_desc:after {
+  display: none;
+}
+
+table.dataTable th,
+table.dataTable td {
+  text-align: center;
+  padding: 0.4rem;
+  vertical-align: middle;
+}
+
+form label span.required {
+  color: red;
+}
+
 body#login {
   background: #76b852;
   /* fallback for old browsers */

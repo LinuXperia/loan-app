@@ -8,13 +8,17 @@ use App\BorrowerPersonalDetails;
 use App\BorrowerResidenceDetails;
 use App\BorrowerWorkDetails;
 use App\Http\Requests\Borrower\NextOfKinRequest;
+use App\Http\ViewComposers\LoanDetailsComposer;
+use App\Loan;
 use App\RefereesDetails;
+use App\Repositories\UserRepository;
 use App\Role;
 use App\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Borrower\PersonalDetails;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\DataTables;
 use Yajra\DataTables\Html\Builder;
 
@@ -563,9 +567,12 @@ class BorrowerController extends Controller
     }
 
     /**
-    * Borrower details view
-    **/
-    public function getBorrowerDetails($id){
+     * Borrower details view
+     * @param Builder $builder
+     * @param $id
+     * @return $this
+     */
+    public function getBorrowerDetails(Builder $builder, $id){
 
         $personalDetails = User::findOrFail($id)->borrowerPersonalDetails;
         $personalDetails->email = User::findOrFail($id)->email;
@@ -573,15 +580,48 @@ class BorrowerController extends Controller
         $nextOfKinDetails = User::findOrFail($id)->borrowerNextOfKin;
         $bankDetails = User::findOrFail($id)->borrowerBankDetails;
 
+        if (request()->ajax()) {
+
+            $loan = Loan::where('user_id', $id);
+
+
+            return DataTables::of($loan)
+                ->addColumn('action', function ($loan) {
+                    return '<a href="/borrower/loan/'.$loan->id.'" class="btn btn-xs btn-outline-info"> More Details</a>';
+                })
+                ->editColumn('id', 'ID: {{$id}}')
+                ->toJson();
+        }
+
+        $html = $builder->columns([
+
+            ['data' => 'reference_no', 'name' => 'reference_no', 'title' => 'Reference No.'],
+            ['data' => 'amount_borrowed', 'name' => 'amount_borrowed', 'title' => 'Amount Borrowed'],
+            ['data' => 'amount_to_pay', 'name' => 'amount_to_pay', 'title' => 'Amount To Pay'],
+            ['data' => 'duration', 'name' => 'duration', 'title' => 'Duration (months)'],
+            [
+                'data' => 'approved',
+                'name' => 'approved',
+                'title' => 'Approved',
+                'render' => 'function(){
+                    
+                                     return data == \'1\' ? \'Approved\' : \'Not Approved\'
+                                }',
+            ],
+            ['data' => 'status', 'name' => 'status', 'title' => 'Status'],
+            ['data' => 'created_at', 'name' => 'created_at', 'title' => 'Borrowed Date'],
+            ['data' => 'action', 'name' => 'action', 'title' => 'Action'],
+
+        ]);
+
         $data = [
             'page' => 'borrower details',
             'personalDetails' => $personalDetails,
             'nextOfKinDetails' => $nextOfKinDetails,
-            'bankDetails' => $bankDetails
+            'bankDetails' => $bankDetails,
         ];
 
 
-        return view('teller.borrower.borrowerDetails')->with($data);
+        return view('teller.borrower.borrowerDetails')->with(compact('html'))->with($data);
     }
-
 }

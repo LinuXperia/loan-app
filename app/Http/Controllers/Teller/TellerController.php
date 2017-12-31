@@ -16,7 +16,7 @@ class TellerController extends Controller
 
     /**
     * Returns Dashboard
-     **/
+    **/
     public function index(){
 
 
@@ -26,6 +26,20 @@ class TellerController extends Controller
         ];
         return view('teller.index',$data);
     }
+
+    /**
+     * Teller profile
+    **/
+
+    public function profile(){
+
+        $data = [
+            'page' => 'profile'
+        ];
+
+        return view('teller.profile')->with($data);
+    }
+
 
 
 }

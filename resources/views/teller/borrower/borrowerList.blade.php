@@ -5,16 +5,7 @@
 
 @endsection
 @section('styles')
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="{{ asset("css/entypo/css/entypo.css") }}">
-    <style>
-        table.dataTable thead .sorting_asc:before, table.dataTable thead .sorting_desc:after{
-            display: none;
-        }
-        .table-bordered thead th, .table-bordered thead td, .table-bordered tbody td{
-            text-align: center;
-        }
-    </style>
 @endsection
 
 @section('content')

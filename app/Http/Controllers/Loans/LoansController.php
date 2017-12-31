@@ -6,9 +6,11 @@ use App\BorrowerPersonalDetails;
 use App\Http\Requests\Loan\LoanDetailsRequest;
 use App\Loan;
 use App\User;
+use Carbon\Carbon;
 use DateTime;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Storage;
 use Intervention\Image\Facades\Image;
 use Webpatser\Uuid\Uuid;
 
@@ -100,7 +102,11 @@ class LoansController extends Controller
         $loanDetails->description = $request->remarks;
         $loanDetails->slug = str_replace('-', '',Uuid::generate()->string);
 
-        $borrower->loans()->save($loanDetails);
+        if($borrower->loans()->save($loanDetails)){
+
+            $loanDetails->reference_no = 'LOAN/'. date('Y') . '/' . date('m'). '/' . date('d') . '/' . (1000 + $loanDetails->id);
+            $loanDetails->save();
+        }
 
         return response()->json([
             'data' => $loanDetails->id
@@ -173,22 +179,33 @@ class LoansController extends Controller
         if(!$request->loan_id){
             return response()->json([
                 'error' => 1,
-                'data' => 'error no loan id'
+                'message' => 'error no loan id'
             ], 406);
         }
 
+        $loan = Loan::findOrFail($request->loan_id);
+
         //validate
-        $validator = Validator::make($request->all(), [
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048'
+        $request->validate([
+            'image' => 'required'
         ]);
-        if ($validator->fails()) {
-            return response()->json(['errors'=>$validator->errors()]);
-        } else {
-            $imageData = $request->get('image');
-            $fileName = Carbon::now()->timestamp . '_' . uniqid() . '.' . explode('/', explode(':', substr($imageData, 0, strpos($imageData, ';')))[1])[1];
-            Image::make($request->get('image'))->save(public_path('images/').$fileName);
-            return response()->json(['error'=>false]);
+
+        $image = $request->get('image');
+
+        $path = 'public/firstLine/borrower/loan/'.$loan->user_id . '/' . $loan->slug;
+
+        if (!is_dir($path)){
+
+            Storage::makeDirectory($path);
         }
+
+
+        $location = Storage::putFileAs(
+            $path, $image, 'test.png'
+        );
+
     }
+
+
 
 }

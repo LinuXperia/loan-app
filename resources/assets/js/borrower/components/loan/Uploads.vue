@@ -24,27 +24,30 @@
         props: ['loan'],
         data(){
             return{
-                image: ''
+                image: '',
+                errors:[]
             }
         },
         methods: {
             onFileChange(e) {
-                let files = e.target.files || e.dataTransfer.files;
+                var files = e.target.files || e.dataTransfer.files;
                 if (!files.length)
                     return;
                 this.createImage(files[0]);
             },
             createImage(file) {
-                let reader = new FileReader();
-                let vm = this;
+                var image = new Image();
+                var reader = new FileReader();
+                var vm = this;
+
                 reader.onload = (e) => {
                     vm.image = e.target.result;
                 };
                 reader.readAsDataURL(file);
             },
             upload(){
-
-                axios.post('/loans/upload',{
+                console.log(this.image)
+                /*axios.post('/loans/upload',{
                     image: this.image,
                     loan_id: this.loan
                 }).
@@ -52,7 +55,7 @@
                     console.log(response)
                 }).catch(error => {
                     console.log(error)
-                });
+                });*/
             }
         }
     }

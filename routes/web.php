@@ -20,6 +20,13 @@ Auth::routes();
 Route::get('/home', 'HomeController@index')->name('home');
 
 
+//change password
+Route::post('/change-password','HomeController@changePassword')->name('teller.changePassword');
+
+
+
+
+
 /**
 ===============================================================================
  ****************************ADMIN ROUTES**************************************
@@ -40,8 +47,11 @@ Route::group(['prefix' => 'admin'], function (){
 
 Route::group(['prefix' => 'teller', 'namespace' => 'Teller', 'middleware' => ['auth','role:teller']], function (){
 
+    //dashboard
     Route::get('/dashboard', 'TellerController@index')->name('teller.dashboard');
 
+    //profile
+    Route::get('/profile', 'TellerController@profile')->name('teller.profile');
 
 
 });

@@ -34,6 +34,9 @@ Vue.component('bank-details', require('./borrower/components/show/BankDetails.vu
 //borrower loan details
 Vue.component('loan-details', require('./borrower/components/loan/New.vue'))
 
+//teller components
+Vue.component('change-password', require('./teller/components/ChangePassword.vue'))
+
 
 const app = new Vue({
     el: '#app'

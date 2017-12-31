@@ -9,7 +9,7 @@
 
     <ul class="nav navbar-nav d-md-down-none">
         <li class="nav-item px-3">
-            <a class="nav-link" href="#">Dashboard</a>
+            <a class="nav-link" href="{{ route('teller.dashboard') }}">Dashboard</a>
         </li>
     </ul>
     <ul class="nav navbar-nav ml-auto">
@@ -26,20 +26,18 @@
                     <strong>Account</strong>
                 </div>
 
-
-                <div class="dropdown-header text-center">
-                    <strong>Settings</strong>
-                </div>
-
-                <a class="dropdown-item" href="#"><i class="fa fa-user"></i> Profile</a>
-                <a class="dropdown-item" href="#"><i class="fa fa-wrench"></i> Settings</a>
+                <a class="dropdown-item" href="{{ route('teller.profile') }}"><i class="fa fa-user"></i> Profile</a>
                 <div class="divider"></div>
-                <a class="dropdown-item" href="#"><i class="fa fa-lock"></i> Logout</a>
+                <a class="dropdown-item" href="{{ url('/logout') }}" onclick="event.preventDefault();
+                                                     document.getElementById('logout-form').submit();"><i class="fa fa-lock"></i> Logout</a>
+                <form id="logout-form" action="{{ url('/logout') }}" method="POST" style="display: none;">
+                    {{ csrf_field() }}
+                </form>
             </div>
 
         </li>
     </ul>
-    <button class="navbar-toggler aside-menu-toggler" type="button">
+    <button class="navbar-toggler " type="button">
         <span class="navbar-toggler-icon"></span>
     </button>
 

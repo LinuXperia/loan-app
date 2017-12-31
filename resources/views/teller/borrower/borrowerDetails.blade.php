@@ -1,7 +1,10 @@
 @extends('teller.layout.main')
 
+@section('beforeStyles')
+    <link rel="stylesheet" href="//cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css">
+@endsection
 @section('content')
-
+    @include('teller.borrower.partial._loan_details')
     <div class="row">
         <div class="col-sm-12">
             <ul class="nav nav-tabs" role="tablist">
@@ -13,6 +16,9 @@
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" data-toggle="tab" href="#bank" role="tab" aria-controls="bank"><i class="icon-wallet"></i> Bank Details</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-toggle="tab" href="#loan" role="tab" aria-controls="loan"><i class="icon-credit-card"></i> Loan Details</a>
                 </li>
             </ul>
 
@@ -56,6 +62,21 @@
                         </bank-details>
                     </div>
                 </div>
+                <div class="tab-pane active" id="loan" role="tabpanel">
+                    <div class="card">
+                        <div class="card-header">
+                            <strong>Loan Details</strong>
+                        </div>
+
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    {!! $html->table(['class' => 'table table-responsive-sm table-striped'], false) !!}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -64,6 +85,8 @@
 @endsection
 
 @section('scripts')
+    <script src="//cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
+    {!! $html->scripts() !!}
     <script>
 
         $("#myTab").on("click", function(){

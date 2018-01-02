@@ -1,1 +1,13 @@
 @import "login";
+@import "loanDetails";
+@import "sidebar";
+
+ul.nav-dropdown-items{
+  li.nav-item {
+    a.nav-link{
+      padding-left: 10% !important;
+      color: #98acdc !important;
+    }
+  }
+
+}

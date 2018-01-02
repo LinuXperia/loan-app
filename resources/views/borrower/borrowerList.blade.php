@@ -14,7 +14,7 @@
         <div class="col-sm-12">
             <div class="card">
                 <div class="card-header">
-                    <i class="fa fa-align-justify"></i> Simple Table
+                    <i class="fa fa-align-justify"></i> Borrower List
                 </div>
                 <div class="card-body">
                     {!! $html->table(['class' => 'table table-responsive-sm table-striped'], false) !!}

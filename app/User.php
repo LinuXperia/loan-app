@@ -5,6 +5,7 @@ namespace App;
 use App\Http\Requests\Borrower\PersonalDetails;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Support\Facades\DB;
 use PhpParser\Builder;
 use Zizaco\Entrust\Traits\EntrustUserTrait;
 
@@ -18,7 +19,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password','registered_by',
+        'name', 'email', 'password','registered_by', 'complete', 'approved', 'status',
     ];
 
     /**
@@ -66,6 +67,11 @@ class User extends Authenticatable
         return $this->hasManyThrough('App\Payment', 'App\Loan');
     }
 
+    public function agentDetails(){
+
+        return $this->hasOne(AgentDetails::class);
+    }
+
     /**
     *Registered by scope
     **/
@@ -87,4 +93,15 @@ class User extends Authenticatable
             $query->where('name', $role);
         });
     }
+
+    /**
+     * @param $query
+     * @param $id
+     * @return mixed
+     */
+    public function scopeGetNameFromId($query, $id){
+
+        return $query->where('id',$id)->first()->name;
+    }
+
 }

@@ -24,18 +24,37 @@ Route::get('/home', 'HomeController@index')->name('home');
 Route::post('/change-password','HomeController@changePassword')->name('teller.changePassword');
 
 
-
-
-
 /**
 ===============================================================================
  ****************************ADMIN ROUTES**************************************
 ===============================================================================
  **/
 
-Route::group(['prefix' => 'admin'], function (){
+Route::group(['prefix' => 'admin','namespace' => 'Admin', 'middleware' =>['auth','role:admin']], function (){
 
     Route::get('/dashboard', 'AdminController@index')->name('admin.dashboard');
+
+    //new agent
+    Route::get('/new-agent', 'AdminController@newAgent')->name('new.agent');
+
+    //post new agent
+    Route::post('/new-agent', 'AdminController@createNewAgent')->name('new.agent');
+
+    //active agents
+    Route::get('/active-agents', 'AdminController@activeAgents')->name('active.agents');
+
+    //inactive agents
+    Route::get('/inactive-agents', 'AdminController@inActiveAgents')->name('inactive.agents');
+
+    //all agents
+    Route::get('/all-agents', 'AdminController@allAgents')->name('all.agents');
+
+    //agent details
+    Route::get('/agent/{id}', 'AdminController@agentsDetails')->name('agent.details');
+
+    //Change Account status
+    Route::put('/change-status', 'AdminController@changeStatus')->name('agent.change.status');
+
 });
 
 
@@ -63,7 +82,7 @@ Route::group(['prefix' => 'teller', 'namespace' => 'Teller', 'middleware' => ['a
 ===============================================================================
  **/
 
-Route::group(['prefix' => 'borrower', 'namespace' => 'Borrower', 'middleware' => ['auth','role:teller,admin']], function (){
+Route::group(['prefix' => 'borrower', 'namespace' => 'Borrower', 'middleware' => ['auth','role:teller|admin']], function (){
 
     //new borrower
     Route::get('/new-borrower', 'BorrowerController@newBorrower')->name('new.borrower');
@@ -107,6 +126,12 @@ Route::group(['prefix' => 'borrower', 'namespace' => 'Borrower', 'middleware' =>
     //borrower Details
     Route::get('/details/{id}', 'BorrowerController@getBorrowerDetails')->name('borrower.details');
 
+    //borrower loan details
+    Route::get('/{user_id}/loan/{loan_id}','BorrowerController@getBorrowerLoanDetails')->name('borrower.loanDetails');
+
+    //unapproved Borrowers
+    Route::get('/unapproved-borrowers', 'BorrowerController@unApprovedBorrower')->name('unapproved.borrowers');
+
 });
 
 /**
@@ -132,4 +157,12 @@ Route::group(['prefix' => 'loans', 'namespace' => 'Loans', 'middleware' => ['aut
     //loan upload
     Route::post('/upload', 'LoansController@fileUpload')->name('loan.fileUpload');
 
+    //loan payment
+    Route::get('/payment/{id}', 'LoansController@loanPayment')->name('loan.payment');
+
+    //post loan payment details
+    Route::post('/payment-details', 'LoansController@setLoanPaymentDetails')->name('loan.payment.details');
+
+    //update loan payment
+    Route::put('/payment-details-update', 'LoansController@updatePaymentDetails')->name('loan.update.payment');
 });

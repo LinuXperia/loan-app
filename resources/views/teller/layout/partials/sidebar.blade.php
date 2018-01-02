@@ -1,8 +1,8 @@
-<div class="sidebar">
+<div class="sidebar ">
     <nav class="sidebar-nav">
         <ul class="nav">
             <li class="nav-item">
-                <a class="nav-link" href="#"><i class="icon-speedometer"></i> Dashboard</a>
+                <a class="nav-link" href="{{ route('teller.dashboard') }}"><i class="icon-speedometer"></i> Dashboard</a>
             </li>
 
             <li class="nav-title">

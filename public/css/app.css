@@ -9732,6 +9732,31 @@ body#login {
   text-decoration: none;
 }
 
+.loan-details {
+  margin-top: 2%;
+}
+
+.loan-details h5 {
+  font-size: 13px !important;
+}
+
+.loan-details h5.content {
+  border-bottom: 1px solid #f0f8ff;
+  text-align: center;
+  color: #8c8c8c;
+}
+
+.admin__sidebar {
+  background-color: #000000 !important;
+}
+
+ul.nav-dropdown-items li.nav-item a.nav-link,
+ul.nav-dropdown-items li.nav-item .navbar a.dropdown-toggle,
+.navbar ul.nav-dropdown-items li.nav-item a.dropdown-toggle {
+  padding-left: 10% !important;
+  color: #98acdc !important;
+}
+
 /*!
  * CoreUI - Open Source Bootstrap Admin Template
  * @version v1.0.6

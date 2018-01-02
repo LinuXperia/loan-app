@@ -4,12 +4,15 @@ namespace App\Http\Controllers\Loans;
 
 use App\BorrowerPersonalDetails;
 use App\Http\Requests\Loan\LoanDetailsRequest;
+use App\Http\Requests\Loan\LoanPaymentRequest;
 use App\Loan;
+use App\Payment;
 use App\User;
 use Carbon\Carbon;
 use DateTime;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Intervention\Image\Facades\Image;
 use Webpatser\Uuid\Uuid;
@@ -206,6 +209,187 @@ class LoansController extends Controller
 
     }
 
+
+
+
+    /**
+     * get loan payment view
+     * @param LoanPaymentRequest $request
+     * @param $id
+     * @return view
+     */
+    public function loanPayment($id){
+
+        $loan =Loan::findOrFail($id);
+
+        $data = [
+            'page' => $loan->reference_no . ' /payment',
+            'loan' => $loan
+        ];
+
+        return view('teller.loans.payment')->with($data);
+    }
+
+    /**
+     * Post loan details
+     * @param LoanPaymentRequest $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function setLoanPaymentDetails(LoanPaymentRequest $request){
+
+        $loan = Loan::findOrFail($request->loan_id);
+
+        if(!$loan){
+            return response()->json([
+                'errors' => [
+                    'reference_no'  => ['This loan does not exist']
+                ]
+            ], 422);
+        }
+
+        if($loan->approved === false){
+            return response()->json([
+                'errors' => [
+                    'reference_no'  => ['This loan has not been approved. Contact admin']
+                ]
+            ], 422);
+        }
+
+        if($loan->status === 'paid'){
+            return response()->json([
+                'errors' => [
+                    'reference_no'  => ['This loan has fully been paid. Contact admin']
+                ]
+            ], 422);
+        }
+
+        //calculate loan balance
+
+        $balance_before = Payment::loanBalance($loan->id, $loan->amount_to_pay);
+
+
+        if($request->amount > $balance_before){
+            return response()->json([
+                'errors' => [
+                    'amount'  => [
+                        "Amount exceeds loan balance: Balance: ksh.".number_format($balance_before, 2)
+                    ]
+                ]
+            ], 422);
+        }
+
+        $payment = new Payment();
+
+        $payment->agent = Auth()->user()->id;
+        $payment->amount = $request->amount;
+        $payment->payment_mode = $request->mode;
+        $payment->cheque_no = $request->cheque_no ? $request->cheque_no : '';
+        $payment->mpesa_no = $request->mpesa ? $request->mpesa : '';
+        $payment->slug = str_replace('-', '',Uuid::generate()->string);
+        $payment->description = $request->description;
+
+        if($loan->payments()->save($payment)){
+
+            $payment->reference_no = 'PAYMENT/'. date('Y') . '/' . date('m'). '/' . date('d') . '/' . $loan->id . '/' . (1000 + $payment->id);
+            $payment->save();
+        }
+
+        $afterPayment = Payment::loanBalance($loan->id, $loan->amount_to_pay);
+
+       /* if($afterPayment === 0){
+            $status = 'paid';
+        }elseif ($afterPayment !== 0){
+            $status = 'partial';
+        }else {
+            $status = 'unpaid';
+        }
+
+        $loan->status = $status;
+        $loan->save();*/
+
+        //send confirm email waiting payment approval
+
+
+        return response()->json([
+            'data' => [
+                'payment_id' => $payment->id,
+                'balance' => number_format($afterPayment, 2)
+                ]
+        ], 200);
+
+    }
+    /**
+     * update loan payment details
+     * @param LoanPaymentRequest $request
+     * @param $id
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function updatePaymentDetails(LoanPaymentRequest $request){
+
+
+        $payment = Payment::findOrFail($request->payment_id);
+
+
+        if(!$payment){
+            return response()->json([
+                'errors' => [
+                    'reference_no'  => ['This payment does not exist']
+                ]
+            ], 422);
+        }
+
+        //calculate loan balance
+
+        $loan = Loan::where('id', $payment->loan_id)->first();
+
+        //reset payed amount
+        $payment->amount = 0;
+        $payment->save();
+
+        $balance_before = Payment::loanBalance($loan->id, $loan->amount_to_pay);
+
+
+        if($request->amount > $balance_before){
+            return response()->json([
+                'errors' => [
+                    'amount'  => [
+                        "Amount exceeds loan balance: Balance: ksh.".number_format($balance_before, 2)
+                    ]
+                ]
+            ], 422);
+        }
+
+        $payment->amount = $request->amount;
+        $payment->payment_mode = $request->mode !==  $payment->payment_mode ? $request->mode : $payment->payment_mode;
+        $payment->cheque_no = $payment->cheque_no !== $request->cheque ? $request->cheque : $payment->cheque_no;
+        $payment->mpesa_no = $payment->mpesa_no !== $request->mpesa ? $request->mpesa : $payment->mpesa_no;;
+
+        $payment->description = $request->description !==  $payment->description ? $request->description : $payment->description;
+
+        $payment->save();
+
+        //send confirm email waiting payment approval
+
+
+        return response()->json([
+            'data' => [
+                'payment_id' => $payment->id,
+                'balance' => number_format(Payment::loanBalance($loan->id, $loan->amount_to_pay), 2)
+            ]
+        ], 200);
+    }
+
+
+    /**
+     * approve loan
+     * @param $id
+     */
+    public function approveLoan($id){
+
+        //role: admin
+
+
+    }
 
 
 }

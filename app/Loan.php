@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 use PhpParser\Builder;
 
 class Loan extends Model
@@ -41,5 +42,14 @@ class Loan extends Model
         $totalToPay = $query->where('user_id', $id)->sum('amount_to_pay');
 
         return $totalToPay - $totalBorrowed;
+    }
+
+    public function scopeLoanBalance($id, $total_loan){
+
+        $totalPayed = DB::table('payments')->where('loan_id', $id)->sum('amount');
+
+        return $total_loan - $totalPayed ;
+
+
     }
 }

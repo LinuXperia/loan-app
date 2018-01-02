@@ -26,16 +26,14 @@ class HomeController extends Controller
      */
     public function index()
     {
-        if(Auth::user()->hasRole('admin')){
 
-            redirect()->route('admin.dashboard');
+        if(Auth::user()->hasRole('admin')){
+            return redirect()->route('admin.dashboard');
         }
         if(Auth::user()->hasRole('teller')){
-
-            redirect()->route('teller.dashboard');
+            return redirect()->route('teller.dashboard');
         }
     }
-
     /**
      * Teller Change Password
      * @param Request $request

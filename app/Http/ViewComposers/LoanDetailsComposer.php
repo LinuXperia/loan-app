@@ -3,6 +3,7 @@
 namespace App\Http\ViewComposers;
 
 use App\Loan;
+use App\Payment;
 use App\Repositories\UserRepository;
 use App\User;
 use Illuminate\Support\Facades\DB;
@@ -36,16 +37,18 @@ class LoanDetailsComposer
     public function compose(View $view)
     {
 
-        $totalLoan = Loan::totalLoan($view->personalDetails->user_id);
-        $totalInterest = Loan::totalInterest($view->personalDetails->user_id);
+        $totalLoan = Loan::totalLoan($view->user_id);
 
-        //TODO:totalPayment
-        //TODO:totalBalance
+        $totalInterest = Loan::totalInterest($view->user_id);
+
+        $totalPayment = Payment::totalPayment($view->user_id);
+
+        $totalBalance =  $totalLoan - $totalPayment;
 
 
         $view->with('totalLoan', $totalLoan);
         $view->with('totalInterest', $totalInterest);
-        $view->with('totalPayment', '0');
-        $view->with('totalBalance', '0');
+        $view->with('totalPayment', $totalPayment);
+        $view->with('totalBalance', $totalBalance);
     }
 }

@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
-use Illuminate\Http\Request;
 
 class LoginController extends Controller
 {
@@ -38,38 +37,8 @@ class LoginController extends Controller
         $this->middleware('guest')->except('logout');
     }
 
-    /**
-     * The user has been authenticated.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  mixed  $user
-     * @return mixed
-     */
-    protected function authenticated(Request $request, $user)
+    protected function redirectTo()
     {
-
-        switch(true) {
-
-            case $user->hasRole('admin'):
-                return redirect()->route('admin.index');
-                break;
-
-            case $user->hasRole('teller'):
-                return  redirect()->route('teller.dashboard');
-                break;
-
-            default:
-                return  redirect()->route('teller.dashboard');
-        }
-    }
-
-    /**
-     * Show the application's login form.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function showLoginForm()
-    {
-        return view('welcome');
+        return '/home';
     }
 }

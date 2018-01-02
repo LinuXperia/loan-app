@@ -9,7 +9,7 @@
 
     <ul class="nav navbar-nav d-md-down-none">
         <li class="nav-item px-3">
-            <a class="nav-link" href="{{ route('teller.dashboard') }}">Customer Service Dashboard</a>
+            <a class="nav-link" href="{{ route('teller.dashboard') }}">Dashboard</a>
         </li>
     </ul>
     <ul class="nav navbar-nav ml-auto">
@@ -23,10 +23,10 @@
             <div class="dropdown-menu dropdown-menu-right">
 
                 <div class="dropdown-header text-center">
-                    <strong>Admin Account</strong>
+                    <strong>Account</strong>
                 </div>
 
-                <a class="dropdown-item" href="#"><i class="fa fa-user"></i>Profile</a>
+                <a class="dropdown-item" href="{{ route('teller.profile') }}"><i class="fa fa-user"></i> Profile</a>
                 <div class="divider"></div>
                 <a class="dropdown-item" href="{{ url('/logout') }}" onclick="event.preventDefault();
                                                      document.getElementById('logout-form').submit();"><i class="fa fa-lock"></i> Logout</a>

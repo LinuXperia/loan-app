@@ -1,4 +1,10 @@
-@extends('teller.layout.main')
+@role('teller')
+    @extends('teller.layout.main')
+@endrole
+
+@role('admin')
+@extends('admin.layout.main')
+@endrole
 
 @section('beforeStyles')
     <link rel="stylesheet" href="//cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css">

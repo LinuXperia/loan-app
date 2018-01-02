@@ -11,7 +11,6 @@ use App\Http\Requests\Borrower\NextOfKinRequest;
 use App\Http\ViewComposers\LoanDetailsComposer;
 use App\Loan;
 use App\RefereesDetails;
-use App\Repositories\UserRepository;
 use App\Role;
 use App\User;
 use Illuminate\Http\Request;
@@ -24,6 +23,13 @@ use Yajra\DataTables\Html\Builder;
 
 class BorrowerController extends Controller
 {
+
+    public function __construct()
+    {
+        //Auth::user()->hasRole('admin');
+
+    }
+
     /**
      * Returns new borrower view
      **/
@@ -587,7 +593,7 @@ class BorrowerController extends Controller
 
             return DataTables::of($loan)
                 ->addColumn('action', function ($loan) {
-                    return '<a href="/borrower/loan/'.$loan->id.'" class="btn btn-xs btn-outline-info"> More Details</a>';
+                    return '<a href="/borrower/'.$loan->user_id . '/loan/'.$loan->id.'" class="btn btn-xs btn-outline-info"> More Details</a>';
                 })
                 ->editColumn('id', 'ID: {{$id}}')
                 ->toJson();
@@ -619,9 +625,84 @@ class BorrowerController extends Controller
             'personalDetails' => $personalDetails,
             'nextOfKinDetails' => $nextOfKinDetails,
             'bankDetails' => $bankDetails,
+            'user_id' => $personalDetails->user_id
         ];
 
 
         return view('teller.borrower.borrowerDetails')->with(compact('html'))->with($data);
+    }
+
+    /**
+     * return borrower loan details
+     * @param $user_id
+     * @param $loan_id
+     * @return view
+     */
+    public function getBorrowerLoanDetails($user_id, $loan_id){
+
+
+        $loan = Loan::findOrFail($loan_id);
+
+        $loan->issued_by = User::getNameFromId($loan->agent);
+
+        //user details
+        $userDetails = BorrowerPersonalDetails::where('user_id',$user_id)->first();
+        $userDetails->email = User::findOrFail($user_id)->email;
+
+        $data = [
+            'page' => 'loan details',
+            'user_id' => $user_id,
+            'user' => $userDetails,
+            'loan' => $loan
+        ];
+
+
+
+        return view('teller.borrower.loanDetails')->with($data);
+    }
+
+    /**
+     * unapproved borrowers
+     * @param Builder $builder
+     * @return view
+     */
+    public function unApprovedBorrower(Builder $builder){
+
+        $users = User::where('approved', false)->withRole('borrower')->get();
+
+        foreach ($users as $user){
+
+            $user->registred_by_name = User::getNameFromId($user->registered_by);
+            $user->mobile = $user->borrowerPersonalDetails()->first()->mobile;
+        }
+
+        if (request()->ajax()) {
+
+
+            return DataTables::of($users)
+                ->addColumn('action', function ($users) {
+                    return '<a href="details/'.$users->id.'" class="btn btn-xs btn-outline-info"> More Details</a>';                })
+                ->editColumn('id', 'ID: {{$id}}')
+                ->toJson();
+        }
+
+        $html = $builder->columns([
+
+            ['data' => 'name', 'name' => 'name', 'title' => 'Name'],
+            ['data' => 'email', 'name' => 'email', 'title' => 'Email'],
+            ['data' => 'mobile', 'name' => 'mobile', 'title' => 'Mobile No.'],
+            ['data' => 'registred_by_name', 'name' => 'registred_by_name', 'title' => 'Registered By'],
+            ['data' => 'created_at', 'name' => 'created_at', 'title' => 'Registred On'],
+            ['data' => 'action', 'name' => 'action', 'title' => 'Action'],
+
+        ]);
+
+        $data = [
+            'page' => 'Inactive Borrowers',
+        ];
+
+
+        return view('admin.borrower.inactive')->with(compact('html'))->with($data);
+
     }
 }

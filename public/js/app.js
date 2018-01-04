@@ -43710,7 +43710,7 @@ return zhTw;
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(286);
-module.exports = __webpack_require__(617);
+module.exports = __webpack_require__(622);
 
 
 /***/ }),
@@ -43761,11 +43761,12 @@ Vue.component('change-password', __webpack_require__(596));
 
 //loan payment
 Vue.component('loan-payment', __webpack_require__(599));
+Vue.component('approve-payment', __webpack_require__(626));
 
 //admin
 Vue.component('agent-details', __webpack_require__(609));
 Vue.component('approve-customer', __webpack_require__(612));
-Vue.component('approve-loan', __webpack_require__(621));
+Vue.component('approve-loan', __webpack_require__(617));
 
 var app = new Vue({
   el: '#app'
@@ -100673,27 +100674,18 @@ if (false) {
 
 /***/ }),
 /* 617 */
-/***/ (function(module, exports) {
-
-// removed by extract-text-webpack-plugin
-
-/***/ }),
-/* 618 */,
-/* 619 */,
-/* 620 */,
-/* 621 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(622)
+  __webpack_require__(618)
 }
 var normalizeComponent = __webpack_require__(2)
 /* script */
-var __vue_script__ = __webpack_require__(624)
+var __vue_script__ = __webpack_require__(620)
 /* template */
-var __vue_template__ = __webpack_require__(625)
+var __vue_template__ = __webpack_require__(621)
 /* template functional */
 var __vue_template_functional__ = false
 /* styles */
@@ -100733,13 +100725,13 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 622 */
+/* 618 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(623);
+var content = __webpack_require__(619);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
@@ -100759,7 +100751,7 @@ if(false) {
 }
 
 /***/ }),
-/* 623 */
+/* 619 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(3)(undefined);
@@ -100773,7 +100765,7 @@ exports.push([module.i, "\n.mb-4{\n    margin-bottom: 0.5rem !important;\n}\n", 
 
 
 /***/ }),
-/* 624 */
+/* 620 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -100854,7 +100846,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 });
 
 /***/ }),
-/* 625 */
+/* 621 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function() {
@@ -100974,6 +100966,312 @@ if (false) {
   module.hot.accept()
   if (module.hot.data) {
     require("vue-hot-reload-api")      .rerender("data-v-6a81f394", module.exports)
+  }
+}
+
+/***/ }),
+/* 622 */
+/***/ (function(module, exports) {
+
+// removed by extract-text-webpack-plugin
+
+/***/ }),
+/* 623 */,
+/* 624 */,
+/* 625 */,
+/* 626 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+function injectStyle (ssrContext) {
+  if (disposed) return
+  __webpack_require__(627)
+}
+var normalizeComponent = __webpack_require__(2)
+/* script */
+var __vue_script__ = __webpack_require__(629)
+/* template */
+var __vue_template__ = __webpack_require__(630)
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = injectStyle
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "resources/assets/js/customer/components/payment/ApprovePayment.vue"
+if (Component.esModule && Object.keys(Component.esModule).some(function (key) {  return key !== "default" && key.substr(0, 2) !== "__"})) {  console.error("named exports are not supported in *.vue files.")}
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-3a00cdc8", Component.options)
+  } else {
+    hotAPI.reload("data-v-3a00cdc8", Component.options)
+' + '  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 627 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(628);
+if(typeof content === 'string') content = [[module.i, content, '']];
+if(content.locals) module.exports = content.locals;
+// add the styles to the DOM
+var update = __webpack_require__(4)("701ebd2b", content, false);
+// Hot Module Replacement
+if(false) {
+ // When the styles change, update the <style> tags
+ if(!content.locals) {
+   module.hot.accept("!!../../../../../../node_modules/css-loader/index.js!../../../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-3a00cdc8\",\"scoped\":false,\"hasInlineConfig\":true}!../../../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0&bustCache!./ApprovePayment.vue", function() {
+     var newContent = require("!!../../../../../../node_modules/css-loader/index.js!../../../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-3a00cdc8\",\"scoped\":false,\"hasInlineConfig\":true}!../../../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0&bustCache!./ApprovePayment.vue");
+     if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+     update(newContent);
+   });
+ }
+ // When the module is disposed, remove the <style> tags
+ module.hot.dispose(function() { update(); });
+}
+
+/***/ }),
+/* 628 */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(3)(undefined);
+// imports
+
+
+// module
+exports.push([module.i, "\n.mb-4{\n    margin-bottom: 0.5rem !important;\n}\n", ""]);
+
+// exports
+
+
+/***/ }),
+/* 629 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+    props: ['paymentDetails'],
+    data: function data() {
+        return {
+            payment: '',
+            errors: null,
+            success: null
+        };
+    },
+
+    methods: {
+        convertToJson: function convertToJson() {
+            this.payment = JSON.parse(this.paymentDetails);
+        },
+        approve: function approve(status) {
+            var _this = this;
+
+            var message = status === true ? "Approve Payment" : "Decline Payment";
+
+            var r = confirm('Do you want to ' + message + '?');
+
+            if (r === true) {
+                axios.put('/loans/payment/approve-payment', {
+                    id: this.loan.id,
+                    status: status
+                }).then(function (response) {
+
+                    _this.payment.approved = status;
+                    _this.errors = null;
+                    _this.success = response.data.success;
+                }).catch(function (error) {
+
+                    _this.success = null;
+                    _this.errors = error.response.data.errors;
+                });
+            }
+        }
+    },
+    mounted: function mounted() {
+        this.convertToJson();
+    }
+});
+
+/***/ }),
+/* 630 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", { staticClass: "card-body text-center" }, [
+    _c("div", { staticClass: "col-sm-6 offset-3" }, [
+      _vm.errors
+        ? _c("div", { staticClass: "alert alert-danger text-center" }, [
+            _vm.errors.approved
+              ? _c("span", [_vm._v(_vm._s(_vm.errors.approved[0]))])
+              : _vm._e()
+          ])
+        : _vm._e(),
+      _vm._v(" "),
+      _vm.success
+        ? _c("div", { staticClass: "alert alert-success text-center" }, [
+            _vm.success.approved
+              ? _c("span", [_vm._v(_vm._s(_vm.success.approved[0]))])
+              : _vm._e()
+          ])
+        : _vm._e()
+    ]),
+    _vm._v(" "),
+    _vm.payment.approved === null
+      ? _c("div", { staticClass: "row" }, [
+          _c("div", { staticClass: "col-sm-4 offset-1" }, [
+            _c(
+              "button",
+              {
+                staticClass: "btn btn-outline-success btn-block mb-4",
+                on: {
+                  click: function($event) {
+                    _vm.approve(true)
+                  }
+                }
+              },
+              [_vm._v("APPROVE PAYMENT")]
+            )
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "col-sm-4 offset-1" }, [
+            _c(
+              "button",
+              {
+                staticClass: "btn btn-danger btn-block",
+                on: {
+                  click: function($event) {
+                    _vm.approve(false)
+                  }
+                }
+              },
+              [_vm._v("DECLINE PAYMENT")]
+            )
+          ])
+        ])
+      : _vm._e(),
+    _vm._v(" "),
+    _vm.payment.approved !== null
+      ? _c("div", { staticClass: "row" }, [
+          !_vm.payment.approved
+            ? _c(
+                "div",
+                {
+                  staticClass: "col-sm-6",
+                  class: !_vm.payment.approved ? "offset-3" : ""
+                },
+                [
+                  _c(
+                    "button",
+                    {
+                      staticClass: "btn btn-outline-success btn-block mb-4",
+                      on: {
+                        click: function($event) {
+                          _vm.approve(true)
+                        }
+                      }
+                    },
+                    [_vm._v("APPROVE PAYMENT")]
+                  )
+                ]
+              )
+            : _vm._e(),
+          _vm._v(" "),
+          _vm.payment.approved
+            ? _c(
+                "div",
+                {
+                  staticClass: "col-sm-6",
+                  class: _vm.payment.approved ? "offset-3" : ""
+                },
+                [
+                  _c(
+                    "button",
+                    {
+                      staticClass: "btn btn-danger btn-block",
+                      on: {
+                        click: function($event) {
+                          _vm.approve(false)
+                        }
+                      }
+                    },
+                    [_vm._v("DECLINE PAYMENT")]
+                  )
+                ]
+              )
+            : _vm._e()
+        ])
+      : _vm._e()
+  ])
+}
+var staticRenderFns = []
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-3a00cdc8", module.exports)
   }
 }
 

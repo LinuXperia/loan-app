@@ -260,10 +260,18 @@ class LoansController extends Controller
             ], 406);
         }
 
-        if($loan->approved === false){
+        if($loan->approved === null){
             return response()->json([
                 'errors' => [
                     'reference_no'  => ['This loan has not been approved. Contact admin']
+                ]
+            ], 406);
+        }
+
+        if($loan->approved === false){
+            return response()->json([
+                'errors' => [
+                    'reference_no'  => ['This loan has not been declined. Contact admin']
                 ]
             ], 406);
         }
@@ -277,9 +285,7 @@ class LoansController extends Controller
         }
 
         //calculate loan balance
-
         $balance_before = Payment::loanBalance($loan->id, $loan->amount_to_pay);
-
 
         if($request->amount > $balance_before){
             return response()->json([
@@ -308,17 +314,6 @@ class LoansController extends Controller
         }
 
         $afterPayment = Payment::loanBalance($loan->id, $loan->amount_to_pay);
-
-       /* if($afterPayment === 0){
-            $status = 'paid';
-        }elseif ($afterPayment !== 0){
-            $status = 'partial';
-        }else {
-            $status = 'unpaid';
-        }
-
-        $loan->status = $status;
-        $loan->save();*/
 
         //send confirm email waiting payment approval
 
@@ -448,13 +443,22 @@ class LoansController extends Controller
             return back()->withError('Loan Not Found');
         }
 
+        if($loan->approved !== null){
+
+            $loan->issued_by = User::getNameFromId($loan->agent);
+        }
+
+        $payment->received_by = User::getNameFromId($payment->agent);
+
+        $loan->balance = Loan::loanBalance($loan->id, $loan->amount_to_pay);
+
         $data = [
             'page' => 'Loan Payment details',
             'loan' => $loan,
             'payment' => $payment
         ];
 
-        return view('loans.details')->with($data);
+        return view('payments.details')->with($data);
     }
 
     /**
@@ -491,7 +495,39 @@ class LoansController extends Controller
         ];
 
 
-        return view('loans.unapproved')->with(compact('html'))->with($data);
+        return view('payments.unapproved')->with(compact('html'))->with($data);
     }
 
+    /**
+     * approve payment
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function approvePayment(Request $request){
+
+        $payment = Payment::findOrFail($request->id);
+
+        if(!$payment){
+            return response()->json([
+                'errors' => [
+                    'approved'  => ['This Payment does not exist']
+                ]
+            ], 406);
+        }
+
+        $loan = Loan::findOrFail($payment->loan_id);
+
+        $loanBalance = Loan::loanBalance($loan->id, $loan->amount_to_pay);
+
+        if($loanBalance === 0){
+            $status = 'paid';
+        }elseif ($loanBalance > 0){
+            $status = 'partial';
+        }else {
+            $status = 'unpaid';
+        }
+
+        $loan->status = $status;
+        $loan->save();
+    }
 }

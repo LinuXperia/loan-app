@@ -39,6 +39,7 @@ Vue.component('change-password', require('./agent/components/ChangePassword.vue'
 
 //loan payment
 Vue.component('loan-payment', require('./customer/components/payment/LoanPayment.vue'))
+Vue.component('approve-payment', require('./customer/components/payment/ApprovePayment.vue'))
 
 //admin
 Vue.component('agent-details', require('./admin/components/Agent-details.vue'))

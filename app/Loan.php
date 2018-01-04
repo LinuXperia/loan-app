@@ -44,7 +44,7 @@ class Loan extends Model
         return $totalToPay - $totalBorrowed;
     }
 
-    public function scopeLoanBalance($id, $total_loan){
+    public function scopeLoanBalance($query, $id, $total_loan){
 
         $totalPayed = DB::table('payments')->where([['loan_id','=', $id],['approved', '=', true]])->sum('amount');
 

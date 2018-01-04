@@ -510,10 +510,13 @@ class LoansController extends Controller
         if(!$payment){
             return response()->json([
                 'errors' => [
-                    'approved'  => ['This Payment does not exist']
+                    'approved'  => ['This payment does not exist']
                 ]
             ], 406);
         }
+
+        $payment->approved = $request->status;
+        $payment->save();
 
         $loan = Loan::findOrFail($payment->loan_id);
 
@@ -529,5 +532,11 @@ class LoansController extends Controller
 
         $loan->status = $status;
         $loan->save();
+
+        return response()->json([
+            'success' => [
+                'approved'  => ['This payment has been approved and updated. refresh page to confirm']
+            ]
+        ], 200);
     }
 }

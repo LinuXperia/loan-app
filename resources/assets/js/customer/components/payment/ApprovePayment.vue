@@ -51,7 +51,7 @@
 
                 if(r === true){
                     axios.put('/loans/payment/approve-payment', {
-                        id: this.loan.id,
+                        id: this.payment.id,
                         status: status,
                     })
                         .then(response => {

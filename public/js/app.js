@@ -101131,7 +101131,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
             if (r === true) {
                 axios.put('/loans/payment/approve-payment', {
-                    id: this.loan.id,
+                    id: this.payment.id,
                     status: status
                 }).then(function (response) {
 

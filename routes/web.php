@@ -198,6 +198,9 @@ Route::group(['prefix' => 'loans', 'namespace' => 'Loans', 'middleware' => 'auth
         //unapproved payments list
         Route::get('/unapproved', 'LoansController@unapprovedPayments')->middleware('role:admin')->name('unapproved.payments');
 
+        //approve payments list
+        Route::put('/approve-payment', 'LoansController@approvePayment')->middleware('role:admin')->name('approve.payments');
+
         //loan payments details
         Route::get('/details/{id}', 'LoansController@paymentDetails')->name('payment.detials');
     });

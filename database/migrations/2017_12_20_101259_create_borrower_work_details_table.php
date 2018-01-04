@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateBorrowerWorkDetailsTable extends Migration
+class CreatecustomerWorkDetailsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class CreateBorrowerWorkDetailsTable extends Migration
      */
     public function up()
     {
-        Schema::create('borrower_work_details', function (Blueprint $table) {
+        Schema::create('customer_work_details', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('user_id')->unsigned();
             $table->string('employer')->nullable();
@@ -36,6 +36,6 @@ class CreateBorrowerWorkDetailsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('borrower_work_details');
+        Schema::dropIfExists('customer_work_details');
     }
 }

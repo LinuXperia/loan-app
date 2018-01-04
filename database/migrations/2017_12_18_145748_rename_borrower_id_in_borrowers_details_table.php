@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class RenameBorrowerIdInBorrowersDetailsTable extends Migration
+class RenameBorrowerIdIncustomersDetailsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -14,7 +14,7 @@ class RenameBorrowerIdInBorrowersDetailsTable extends Migration
     public function up()
     {
         Schema::table('borrower_personal_details', function (Blueprint $table) {
-            $table->renameColumn('borrower_id', 'user_id');
+            $table->renameColumn('customer_id', 'user_id');
         });
     }
 

@@ -16,4 +16,16 @@ class BorrowerPersonalDetails extends Model
 
        return $this->belongsTo(User::class);
    }
+
+    /**
+     * check if number exist
+     * @param $query
+     * @param $number
+     * @return bool
+     */
+    protected function ScopeAccountNumberExist($query, $number) {
+        // query the database and return a boolean
+        // for instance, it might look like this in Laravel
+        return $query->whereColumn('account',$number)->first() > 0 ? true : false;
+    }
 }

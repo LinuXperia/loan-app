@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddForeignKeyToBorrowersDetailsTable extends Migration
+class AddForeignKeyToBorrowerDetailsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -28,7 +28,7 @@ class AddForeignKeyToBorrowersDetailsTable extends Migration
     public function down()
     {
         Schema::table('borrower_personal_details', function (Blueprint $table) {
-            //
+            $table->dropForeign(['user_id']);
         });
     }
 }

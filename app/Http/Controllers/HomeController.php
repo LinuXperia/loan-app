@@ -30,12 +30,12 @@ class HomeController extends Controller
         if(Auth::user()->hasRole('admin')){
             return redirect()->route('admin.dashboard');
         }
-        if(Auth::user()->hasRole('teller')){
-            return redirect()->route('teller.dashboard');
+        if(Auth::user()->hasRole('agent')){
+            return redirect()->route('agent.dashboard');
         }
     }
     /**
-     * Teller Change Password
+     * agent Change Password
      * @param Request $request
      */
     public function changePassword(Request $request){
@@ -59,7 +59,7 @@ class HomeController extends Controller
         if (!Hash::check($request->current_password, $user->password)) {
             return response()->json([
                 'errors' => [
-                    'current_password' => ['incorrect current password']
+                    'current_password' => ['Incorrect Current Password']
                 ]
             ], 401);
         }

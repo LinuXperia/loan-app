@@ -23,7 +23,7 @@ class CreatePaymentsTable extends Migration
             $table->string('cheque_no')->nullable();
             $table->string('mpesa_no')->nullable();
             $table->string('slug')->unique();
-            $table->boolean('approved')->default(false);
+            $table->boolean('approved')->nullable()->default(null);
             $table->text('description');
 
             $table->timestamps();

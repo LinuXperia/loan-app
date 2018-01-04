@@ -21,7 +21,7 @@ Route::get('/home', 'HomeController@index')->name('home');
 
 
 //change password
-Route::post('/change-password','HomeController@changePassword')->name('teller.changePassword');
+Route::post('/change-password','HomeController@changePassword')->name('agent.changePassword');
 
 
 /**
@@ -32,7 +32,11 @@ Route::post('/change-password','HomeController@changePassword')->name('teller.ch
 
 Route::group(['prefix' => 'admin','namespace' => 'Admin', 'middleware' =>['auth','role:admin']], function (){
 
+    //admin dashboard
     Route::get('/dashboard', 'AdminController@index')->name('admin.dashboard');
+
+    //admin dashboard
+    Route::get('/profile', 'AdminController@profile')->name('admin.profile');
 
     //new agent
     Route::get('/new-agent', 'AdminController@newAgent')->name('new.agent');
@@ -60,17 +64,17 @@ Route::group(['prefix' => 'admin','namespace' => 'Admin', 'middleware' =>['auth'
 
 /**
 ===============================================================================
-****************************TELLER ROUTES**************************************
+****************************Agent ROUTES**************************************
 ===============================================================================
  **/
 
-Route::group(['prefix' => 'teller', 'namespace' => 'Teller', 'middleware' => ['auth','role:teller']], function (){
+Route::group(['prefix' => 'agent', 'namespace' => 'Teller', 'middleware' => ['auth','role:agent']], function (){
 
     //dashboard
-    Route::get('/dashboard', 'TellerController@index')->name('teller.dashboard');
+    Route::get('/dashboard', 'TellerController@index')->name('agent.dashboard');
 
     //profile
-    Route::get('/profile', 'TellerController@profile')->name('teller.profile');
+    Route::get('/profile', 'TellerController@profile')->name('agent.profile');
 
 
 });
@@ -78,59 +82,80 @@ Route::group(['prefix' => 'teller', 'namespace' => 'Teller', 'middleware' => ['a
 
 /**
 ===============================================================================
- ****************************BORROWER ROUTES**************************************
+ ****************************CUSTOMER ROUTES**************************************
 ===============================================================================
  **/
 
-Route::group(['prefix' => 'borrower', 'namespace' => 'Borrower', 'middleware' => ['auth','role:teller|admin']], function (){
+Route::group(['prefix' => 'customer', 'namespace' => 'Borrower', 'middleware' => 'auth'], function (){
 
-    //new borrower
-    Route::get('/new-borrower', 'BorrowerController@newBorrower')->name('new.borrower');
+    //new customer
+    Route::get('/new-customer', 'BorrowerController@newcustomer')->middleware('role:agent')->name('new.customer');
 
     //post personal details form vue
-    Route::post('/borrower-personal-details', 'BorrowerController@personalDetails')->name('borrower.personalDetails');
+    Route::post('/customer-personal-details', 'BorrowerController@personalDetails')->middleware('role:agent')->name('customer.personalDetails');
 
     //update personal details form vue
-    Route::put('/update-borrower-personal-details', 'BorrowerController@updatePersonalDetails')->name('borrower.updatePersonalDetails');
+    Route::put('/update-customer-personal-details', 'BorrowerController@updatePersonalDetails')->middleware('role:agent')->name('customer.updatePersonalDetails');
 
-    //post borrower next of kin
-    Route::post('/borrower-next-of-kin', 'BorrowerController@nextOfKin')->name('borrower.nextOfKin');
+    //post customer next of kin
+    Route::post('/customer-next-of-kin', 'BorrowerController@nextOfKin')->middleware('role:agent')->name('customer.nextOfKin');
 
-    //update borrower next of kin
-    Route::put('/update-borrower-next-of-kin', 'BorrowerController@updateNextOfKin')->name('borrower.updateNextOfKin');
+    //update customer next of kin
+    Route::put('/update-customer-next-of-kin', 'BorrowerController@updateNextOfKin')->middleware('role:agent')->name('customer.updateNextOfKin');
 
-    //post borrower bank details
-    Route::post('/borrower-bank-details', 'BorrowerController@bankDetails')->name('borrower.bankDetails');
+    //post customer bank details
+    Route::post('/customer-bank-details', 'BorrowerController@bankDetails')->middleware('role:agent')->name('customer.bankDetails');
 
-    //post borrower residence details
-    Route::post('/borrower-residence-details', 'BorrowerController@residenceDetails')->name('borrower.residenceDetails');
+    //post customer residence details
+    Route::post('/customer-residence-details', 'BorrowerController@residenceDetails')->middleware('role:agent')->name('customer.residenceDetails');
 
-    //post borrower work details
-    Route::post('/borrower-work-details', 'BorrowerController@workDetails')->name('borrower.workDetails');
+    //post customer work details
+    Route::post('/customer-work-details', 'BorrowerController@workDetails')->middleware('role:agent')->name('customer.workDetails');
 
-    //post borrower business details
-    Route::post('/borrower-self-employment-details', 'BorrowerController@businessDetails')->name('borrower.businessDetails');
+    //post customer business details
+    Route::post('/customer-self-employment-details', 'BorrowerController@businessDetails')->middleware('role:agent')->name('customer.businessDetails');
 
-    //post borrower referees details
-    Route::post('/borrower-referees-details', 'BorrowerController@refereesDetails')->name('borrower.refereesDetails');
+    //post customer referees details
+    Route::post('/customer-referees-details', 'BorrowerController@refereesDetails')->middleware('role:agent')->name('customer.refereesDetails');
 
-    //post borrower referees details
-    Route::post('/complete-profile', 'BorrowerController@completeProfile')->name('borrower.completeProfile');
+    //post customer referees details
+    Route::post('/complete-profile', 'BorrowerController@completeProfile')->middleware('role:agent')->name('customer.completeProfile');
 
-    //borrower list view
-    Route::get('/list-of-borrowers', 'BorrowerController@borrowerList')->name('borrower.list');
+    //customer list view
+    Route::get('/list-of-customers', 'BorrowerController@customerList')->name('customer.list');
 
-    //borrower list
-    Route::get('/get-borrower-list', 'BorrowerController@getBorrowerList')->name('getBorrowerList');
+    //customer list
+    //Route::get('/get-customer-list', 'BorrowerController@getcustomerList')->name('getcustomerList');
 
-    //borrower Details
-    Route::get('/details/{id}', 'BorrowerController@getBorrowerDetails')->name('borrower.details');
+    //customer Details
+    Route::get('/details/{id}', 'BorrowerController@getCustomerDetails')->name('customer.details');
 
-    //borrower loan details
-    Route::get('/{user_id}/loan/{loan_id}','BorrowerController@getBorrowerLoanDetails')->name('borrower.loanDetails');
+    //customer loan details
+    Route::get('/{user_id}/loan/{loan_id}','BorrowerController@getcustomerLoanDetails')->name('customer.loanDetails');
 
-    //unapproved Borrowers
-    Route::get('/unapproved-borrowers', 'BorrowerController@unApprovedBorrower')->name('unapproved.borrowers');
+    //unapproved customers
+    Route::get('/unapproved-customers', 'BorrowerController@unApprovedcustomer')->middleware('role:admin')->name('unapproved.customers');
+
+    //approved customers
+    Route::get('/approved-customers', 'BorrowerController@approvedcustomer')->middleware('role:admin')->name('approved.customers');
+
+    //declined customers
+    Route::get('/declined-customers', 'BorrowerController@declinedcustomer')->middleware('role:admin')->name('declined.customers');
+
+    //dormant customers
+    Route::get('/dormant-customers', 'BorrowerController@dormantcustomer')->middleware('role:admin')->name('dormant.customers');
+
+    //blacklisted customers
+    Route::get('/blacklisted-customers', 'BorrowerController@blacklistedcustomer')->middleware('role:admin')->name('blacklisted.customers');
+
+    //change customer approve status
+    Route::put('/change-approve-status', 'BorrowerController@changeApproveStatus')->middleware('role:admin')->name('change.customers.approve.status');
+
+    //change customer active status
+    Route::put('/change-active-status', 'BorrowerController@changeActiveStatus')->middleware('role:admin')->name('change.customers.active.status');
+
+    //blacklist customer
+    Route::put('/blacklist-customer', 'BorrowerController@blacklistcustomer')->middleware('role:admin')->name('blacklist.customer');
 
 });
 
@@ -140,29 +165,41 @@ Route::group(['prefix' => 'borrower', 'namespace' => 'Borrower', 'middleware' =>
 ===============================================================================
  **/
 
-Route::group(['prefix' => 'loans', 'namespace' => 'Loans', 'middleware' => ['auth','role:teller,admin']], function () {
+Route::group(['prefix' => 'loans', 'namespace' => 'Loans', 'middleware' => 'auth'], function () {
 
-    //search loan borrower
-    Route::get('/index', 'LoansController@index')->name('loans.index');
+    //search loan customer
+    Route::get('/index', 'LoansController@index')->middleware('role:agent')->name('loans.index');
 
-    //search loan borrower
+    //Loan Details
     Route::get('/{id}', 'LoansController@newLoan')->name('loan.new');
 
     //post loan details
-    Route::post('/loan-details', 'LoansController@setLoanDetails')->name('loan.details');
+    Route::post('/loan-details', 'LoansController@setLoanDetails')->middleware('role:agent')->name('loan.details');
 
-    //post loan details
+    //update loan details
     Route::post('/loan-details-update', 'LoansController@updateLoanDetails')->name('loan.update.details');
 
     //loan upload
     Route::post('/upload', 'LoansController@fileUpload')->name('loan.fileUpload');
 
-    //loan payment
-    Route::get('/payment/{id}', 'LoansController@loanPayment')->name('loan.payment');
+    //approve loan
+    Route::put('/approve-loan','LoansController@approveLoan')->middleware('role:admin')->name('approve.loan');
 
-    //post loan payment details
-    Route::post('/payment-details', 'LoansController@setLoanPaymentDetails')->name('loan.payment.details');
+    Route::group(['prefix' => 'payment'], function (){
+        //loan payment
+        Route::get('/payment/{id}', 'LoansController@loanPayment')->name('loan.payment');
 
-    //update loan payment
-    Route::put('/payment-details-update', 'LoansController@updatePaymentDetails')->name('loan.update.payment');
+        //post loan payment details
+        Route::post('/payment-details', 'LoansController@setLoanPaymentDetails')->middleware('role:agent')->name('loan.payment.details');
+
+        //update loan payment
+        Route::put('/payment-details-update', 'LoansController@updatePaymentDetails')->name('loan.update.payment');
+
+        //unapproved payments list
+        Route::get('/unapproved', 'LoansController@unapprovedPayments')->middleware('role:admin')->name('unapproved.payments');
+
+        //loan payments details
+        Route::get('/details/{id}', 'LoansController@paymentDetails')->name('payment.detials');
+    });
+
 });

@@ -16,7 +16,7 @@ class ComposerServiceProvider extends ServiceProvider
     {
         // Using class based composers...
         View::composer(
-            'teller.borrower.partial._loan_details', 'App\Http\ViewComposers\LoanDetailsComposer'
+            'customer.partial._loan_details', 'App\Http\ViewComposers\LoanDetailsComposer'
         );
     }
 

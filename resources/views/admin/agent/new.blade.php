@@ -84,7 +84,7 @@
                                     <div class="row">
                                         <label class="col-sm-3 col-form-label" for="comment">Comment</label>
                                         <div class="col-sm-9">
-                                            <textarea type="text" id="comment" name="country" class="form-control {{ $errors->has('comment') ? ' is-invalid' : '' }}" placeholder="Enter Comment..."  >{{ old('comment') ?  old('comment') : ''}}</textarea>
+                                            <textarea type="text" id="comment" name="comment" class="form-control {{ $errors->has('comment') ? ' is-invalid' : '' }}" placeholder="Enter Comment..."  >{{ old('comment') ?  old('comment') : ''}}</textarea>
                                             @if ($errors->has('comment'))
                                                 <span class="invalid-feedback">
                                                     <strong>{{ $errors->first('comment') }}</strong>

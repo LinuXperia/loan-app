@@ -14,7 +14,7 @@ class AddTitleToBorrowerTable extends Migration
     public function up()
     {
         Schema::table('borrower_personal_details', function (Blueprint $table) {
-            $table->string('title')->after('borrower_id');
+            $table->string('title')->after('customer_id');
         });
     }
 

@@ -15,7 +15,7 @@ class CreateBorrowerPersonalDetailsTable extends Migration
     {
         Schema::create('borrower_personal_details', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('borrower_id')->unsigned();
+            $table->integer('user_id')->unsigned();
             $table->string('fname');
             $table->string('sname');
             $table->string('lname')->nullable;

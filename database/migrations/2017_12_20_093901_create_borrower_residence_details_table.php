@@ -34,6 +34,6 @@ class CreateBorrowerResidenceDetailsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('borrower_residence_details');
+        Schema::dropIfExists('customer_residence_details');
     }
 }

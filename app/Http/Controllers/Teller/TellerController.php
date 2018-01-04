@@ -11,7 +11,8 @@ class TellerController extends Controller
 {
     public function __construct()
     {
-        //
+        $this->middleware('auth');
+        $this->middleware('role:agent');
     }
 
     /**
@@ -24,11 +25,11 @@ class TellerController extends Controller
         $data = [
             'page' => ''
         ];
-        return view('teller.index',$data);
+        return view('agent.index',$data);
     }
 
     /**
-     * Teller profile
+     * agent profile
     **/
 
     public function profile(){
@@ -37,9 +38,7 @@ class TellerController extends Controller
             'page' => 'profile'
         ];
 
-        return view('teller.profile')->with($data);
+        return view('agent.profile')->with($data);
     }
-
-
 
 }

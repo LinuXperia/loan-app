@@ -1,6 +1,7 @@
 @extends('admin.layouts.main')
 
 @section('content')
+
     <div class="row">
         <div class="col-sm-6 col-lg-3">
             <div class="card">
@@ -38,7 +39,7 @@
                         <span>
                             @php
                                 echo strtoupper(date('F Y'));
-                            @endphp BORROWERS
+                            @endphp customerS
                         </span>
                         <span class="float-right">1,000</span>
                     </div>

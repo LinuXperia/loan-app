@@ -44,12 +44,12 @@
             <!-- /.conainer-fluid -->
         </main>
 
-        {{-- @include('teller.layout.partials.aside')--}}
+        {{-- @include('agent.layout.partials.aside')--}}
 
     </div>
 
 </div>
-    {{--@include('teller.layout.partials.footer')--}}
+    {{--@include('agent.layout.partials.footer')--}}
 
 <!-- CoreUI main scripts -->
     <script src="{{ asset('js/app.js') }}"></script>

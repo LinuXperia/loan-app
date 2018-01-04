@@ -38,6 +38,18 @@ class AdminController extends Controller
    }
 
     /**
+     * @return $this
+     */
+    public function profile(){
+
+       $data = [
+           'page' => 'Admin Profile'
+       ];
+
+        return view('admin.profile')->with($data);
+   }
+
+    /**
      *return new agent view
      */
     public function newAgent(){
@@ -76,7 +88,7 @@ class AdminController extends Controller
 
         $user->agentDetails()->save($agentDetails);
 
-        //assign teller role
+        //assign agent role
        $user->attachRole(2);
 
         //sender email to agent
@@ -92,7 +104,7 @@ class AdminController extends Controller
      */
     public function activeAgents(Builder $builder){
 
-        $agents = User::withRole('teller')->where('status', 'active')->get();
+        $agents = User::withRole('agent')->where('status', 'active')->get();
 
         foreach ($agents as $agent){
             $agent->registered_by_name = User::getNameFromId($agent->registered_by);
@@ -131,7 +143,7 @@ class AdminController extends Controller
      */
     public function inActiveAgents(Builder $builder){
 
-        $agents = User::withRole('teller')->where('status', 'inactive')->get();
+        $agents = User::withRole('agent')->where('status', 'inactive')->get();
 
         foreach ($agents as $agent){
             $agent->registered_by_name = User::getNameFromId($agent->registered_by);
@@ -173,7 +185,7 @@ class AdminController extends Controller
      */
     public function allAgents(Builder $builder){
 
-        $agents = User::withRole('teller')->get();
+        $agents = User::withRole('agent')->get();
 
         foreach ($agents as $agent){
             $agent->registered_by_name = User::getNameFromId($agent->registered_by);

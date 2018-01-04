@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Loans;
 
-use App\BorrowerPersonalDetails;
+use App\customerPersonalDetails;
 use App\Http\Requests\Loan\LoanDetailsRequest;
 use App\Http\Requests\Loan\LoanPaymentRequest;
 use App\Loan;
@@ -15,21 +15,23 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Intervention\Image\Facades\Image;
+use Yajra\DataTables\DataTables;
+use Yajra\DataTables\Html\Builder;
 use Webpatser\Uuid\Uuid;
 
 class LoansController extends Controller
 {
 
     /**
-     * return borrower search view
+     * return customer search view
     **/
     public function index(){
 
         $data = [
-            'page' => 'search borrower'
+            'page' => 'search customer'
         ];
 
-        return view('teller.loans.index')->with($data);
+        return view('agent.loans.index')->with($data);
     }
 
     /**
@@ -38,34 +40,48 @@ class LoansController extends Controller
     public function newLoan($id){
 
 
+        $customer = User::findOrFail($id);
 
-        $borrower = User::findOrFail($id);
 
-
-        if(!$borrower){
-            return redirect()->back()->withError('That user does not exist!, contact admin');
+        if(!$customer){
+            return redirect()->back()->withError('That user does not exist!, Select Correct User');
         }
 
-        if(!$borrower->hasRole('borrower')){
-            return redirect()->back()->withError('This Borrower does qualify as a borrower!, contact admin');
+        if(!$customer->hasRole('customer')){
 
-        }
-
-        if($borrower->complete !== 1){
-            return redirect()->back()->withError('This Borrower profile is not complete!, complete profile first');
+            return redirect()->back()->withError('This customer does qualify as a customer!, contact admin');
 
         }
 
-        $borrower->fname =  User::findOrFail($id)->borrowerPersonalDetails()->first()->fname;
-        $borrower->mobile =  User::findOrFail($id)->borrowerPersonalDetails()->first()->mobile;
-        $borrower->address =  User::findOrFail($id)->borrowerPersonalDetails()->first()->address;
+        if($customer->complete === false){
+
+            return redirect()->back()->withError('This customer profile is not complete!, complete profile first');
+        }
+
+        if($customer->approved === null){
+
+            return redirect()->back()->withError('This customer account is not approved!, contact admin to approve');
+        }
+
+        if($customer->approved === false){
+
+            return redirect()->back()->withError('This customer account has been declined!, contact admin to approve');
+        }
+
+        if($customer->status !== 'active'){
+            return redirect()->back()->withError('This customer  account is ' .$customer->status .'!, contact admin to approve');
+        }
+
+        $customer->fname =  User::findOrFail($id)->borrowerPersonalDetails()->first()->fname;
+        $customer->mobile =  User::findOrFail($id)->borrowerPersonalDetails()->first()->mobile;
+        $customer->address =  User::findOrFail($id)->borrowerPersonalDetails()->first()->address;
 
         $data = [
             'page' => 'new loan',
-            'borrower' => $borrower
+            'customer' => $customer
         ];
 
-        return view('teller.loans.new')->with($data);
+        return view('agent.loans.new')->with($data);
     }
 
     /**
@@ -76,10 +92,10 @@ class LoansController extends Controller
     public function setLoanDetails(LoanDetailsRequest $request){
 
 
-        $borrower = User::findOrFail($request->user_id);
+        $customer = User::findOrFail($request->user_id);
 
-        if($borrower->complete !== 1 ){
-            return redirect()->back()->withError('This Borrower profile is not complete!, complete profile first');
+        if($customer->complete !== 1 ){
+            return redirect()->back()->withError('This customer profile is not complete!, complete profile first');
         }
 
         $payment_date  = new DateTime("+".$request->duration." months");
@@ -105,7 +121,7 @@ class LoansController extends Controller
         $loanDetails->description = $request->remarks;
         $loanDetails->slug = str_replace('-', '',Uuid::generate()->string);
 
-        if($borrower->loans()->save($loanDetails)){
+        if($customer->loans()->save($loanDetails)){
 
             $loanDetails->reference_no = 'LOAN/'. date('Y') . '/' . date('m'). '/' . date('d') . '/' . (1000 + $loanDetails->id);
             $loanDetails->save();
@@ -195,7 +211,7 @@ class LoansController extends Controller
 
         $image = $request->get('image');
 
-        $path = 'public/firstLine/borrower/loan/'.$loan->user_id . '/' . $loan->slug;
+        $path = 'public/firstLine/customer/loan/'.$loan->user_id . '/' . $loan->slug;
 
         if (!is_dir($path)){
 
@@ -209,14 +225,11 @@ class LoansController extends Controller
 
     }
 
-
-
-
     /**
      * get loan payment view
-     * @param LoanPaymentRequest $request
      * @param $id
      * @return view
+     * @internal param LoanPaymentRequest $request
      */
     public function loanPayment($id){
 
@@ -227,7 +240,7 @@ class LoansController extends Controller
             'loan' => $loan
         ];
 
-        return view('teller.loans.payment')->with($data);
+        return view('agent.loans.payment')->with($data);
     }
 
     /**
@@ -244,7 +257,7 @@ class LoansController extends Controller
                 'errors' => [
                     'reference_no'  => ['This loan does not exist']
                 ]
-            ], 422);
+            ], 406);
         }
 
         if($loan->approved === false){
@@ -252,7 +265,7 @@ class LoansController extends Controller
                 'errors' => [
                     'reference_no'  => ['This loan has not been approved. Contact admin']
                 ]
-            ], 422);
+            ], 406);
         }
 
         if($loan->status === 'paid'){
@@ -260,7 +273,7 @@ class LoansController extends Controller
                 'errors' => [
                     'reference_no'  => ['This loan has fully been paid. Contact admin']
                 ]
-            ], 422);
+            ], 406);
         }
 
         //calculate loan balance
@@ -275,7 +288,7 @@ class LoansController extends Controller
                         "Amount exceeds loan balance: Balance: ksh.".number_format($balance_before, 2)
                     ]
                 ]
-            ], 422);
+            ], 406);
         }
 
         $payment = new Payment();
@@ -335,7 +348,7 @@ class LoansController extends Controller
                 'errors' => [
                     'reference_no'  => ['This payment does not exist']
                 ]
-            ], 422);
+            ], 406);
         }
 
         //calculate loan balance
@@ -356,7 +369,7 @@ class LoansController extends Controller
                         "Amount exceeds loan balance: Balance: ksh.".number_format($balance_before, 2)
                     ]
                 ]
-            ], 422);
+            ], 406);
         }
 
         $payment->amount = $request->amount;
@@ -382,14 +395,103 @@ class LoansController extends Controller
 
     /**
      * approve loan
-     * @param $id
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function approveLoan($id){
+    public function approveLoan(Request $request){
 
-        //role: admin
+        $loan = Loan::findOrFail($request->id);
+
+        if(!$loan){
+            return response()->json([
+                'errors' => [
+                    'approved'  => ['This loan does not exist']
+                ]
+            ], 406);
+        }
+
+        $loan->approved = $request->status;
+        $loan->approved_by = Auth::user()->id;
+        $loan->approved_date = Carbon::now();
+        $loan->payment_date = Carbon::today()->addMonths($loan->duration);
+
+        $loan->save();
 
 
+        //TODO:send loan approve email
+
+        return response()->json([
+            'success' => [
+                'approved'  => ['Loan has been approved. refresh page']
+            ]
+        ], 200);
     }
 
+    /**
+     * payment Details
+     * @param $id
+     * @return $this
+     */
+    public function paymentDetails($id){
+
+        $payment = Payment::findOrFail($id);
+
+        if (!$payment){
+
+            return back()->withError('Payment Not Found');
+        }
+
+        $loan = Loan::findOrFail($payment->loan_id);
+
+        if (!$loan){
+
+            return back()->withError('Loan Not Found');
+        }
+
+        $data = [
+            'page' => 'Loan Payment details',
+            'loan' => $loan,
+            'payment' => $payment
+        ];
+
+        return view('loans.details')->with($data);
+    }
+
+    /**
+     * unapproved payments
+     * @param Builder $builder
+     * @return $this
+     */
+    public function unapprovedPayments(Builder $builder){
+
+        $payments = Payment::where('approved', null);
+
+        if (request()->ajax()) {
+
+
+            return DataTables::of($payments)
+                ->addColumn('action', function ($payments) {
+                    return '<a href="details/'.$payments->id.'" class="btn btn-xs btn-outline-info"> More Details</a>';                })
+                ->editColumn('id', 'ID: {{$id}}')
+                ->toJson();
+        }
+
+        $html = $builder->columns([
+
+            ['data' => 'reference_no', 'name' => 'reference_no', 'title' => 'Reference No.'],
+            ['data' => 'amount', 'name' => 'amount', 'title' => 'Amount'],
+            ['data' => 'payment_mode', 'name' => 'payment_mode', 'title' => 'Payment Mode'],
+            ['data' => 'created_at', 'name' => 'created_at', 'title' => 'Payed On'],
+            ['data' => 'action', 'name' => 'action', 'title' => 'Action'],
+
+        ]);
+
+        $data = [
+            'page' => 'Un approved Loan Payments',
+        ];
+
+
+        return view('loans.unapproved')->with(compact('html'))->with($data);
+    }
 
 }

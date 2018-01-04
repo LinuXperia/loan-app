@@ -28,7 +28,7 @@ class CreateLoansTable extends Migration
             $table->float('mv', 8, 2)->default(0.00);
             $table->float('discharge_fee', 8, 2)->default(0.00);
             $table->text('description')->nullable();
-            $table->boolean('approved')->default(false);
+            $table->boolean('approved')->nullable()->default(null);
             $table->enum('status', ['paid','unpaid','partial'])->default('unpaid');
             $table->dateTime('approved_date')->nullable();
             $table->date('payment_date');

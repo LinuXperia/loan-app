@@ -2,29 +2,32 @@
     <nav class="sidebar-nav">
         <ul class="nav">
             <li class="nav-item">
-                <a class="nav-link" href="#"><i class="icon-speedometer"></i> Dashboard</a>
+                <a class="nav-link" href="{{ route('admin.dashboard') }}"><i class="icon-speedometer"></i> Dashboard</a>
             </li>
 
             <li class="nav-title">
                 Customers Service
             </li>
             <li class="nav-item nav-dropdown">
-                <a class="nav-link nav-dropdown-toggle" href="#"><i class="icon-emotsmile"></i> Borrower</a>
+                <a class="nav-link nav-dropdown-toggle" href="#"><i class="icon-emotsmile"></i> Account Details</a>
                 <ul class="nav-dropdown-items">
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ route('unapproved.borrowers') }}"><i class="icon-dislike"></i> Unapproved</a>
+                        <a class="nav-link" href="{{ route('unapproved.customers') }}"><i class="icon-dislike"></i>New Accounts</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#"><i class="icon-like"></i> Approved Borrowers</a>
+                        <a class="nav-link" href="{{ route('approved.customers') }}"><i class="icon-like"></i> Approved Accounts</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#"><i class="icon-ban"></i> Declined Borrowers</a>
+                        <a class="nav-link" href="{{ route('declined.customers') }}"><i class="icon-ban"></i> Declined Accounts</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#"><i class="icon-close"></i> BlackList Borrowers</a>
+                        <a class="nav-link" href="{{ route('dormant.customers') }}"><i class="icon-minus"></i> Dormant Accounts</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#"><i class="icon-list"></i> All Borrowers</a>
+                        <a class="nav-link" href="{{ route('blacklisted.customers') }}"><i class="icon-close"></i> BlackList Accounts</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('customer.list') }}"><i class="icon-list"></i> All Accounts</a>
                     </li>
                 </ul>
             </li>
@@ -33,7 +36,7 @@
                 <a class="nav-link nav-dropdown-toggle" href="#"><i class="icon-grid"></i> Loan Details</a>
                 <ul class="nav-dropdown-items">
                     <li class="nav-item">
-                        <a class="nav-link" href="#"><i class="icon-dislike"></i> Unapproved Loans</a>
+                        <a class="nav-link" href="#"><i class="icon-dislike"></i> New Loans</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#"><i class="icon-like"></i> Approved Loans</a>
@@ -51,7 +54,7 @@
                 <a class="nav-link nav-dropdown-toggle" href="#"><i class="icon-paypal"></i> Payment Details</a>
                 <ul class="nav-dropdown-items">
                     <li class="nav-item">
-                        <a class="nav-link" href="#"><i class="icon-credit-card"></i> Unapproved</a>
+                        <a class="nav-link" href="{{ route('unapproved.payments') }}"><i class="icon-credit-card"></i> New Payments</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#"><i class="icon-eye"></i> Approved Payments</a>
@@ -88,7 +91,7 @@
                 Account Details
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#" target="_top"><i class="icon-settings"></i>Admin Profile</a>
+                <a class="nav-link" href="{{ route('admin.profile') }}" target="_top"><i class="icon-settings"></i>Admin Profile</a>
             </li>
 
 

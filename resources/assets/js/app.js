@@ -23,25 +23,27 @@ Vue.use(VueLocalStorage)
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 
-//create new borrower
-Vue.component('new-borrower', require('./borrower/components/new/New.vue'));
+//create new customer
+Vue.component('new-customer', require('./customer/components/new/New.vue'));
 
-//borrower show and editdetails components
-Vue.component('personal-details', require('./borrower/components/show/PersonalDetails.vue'))
-Vue.component('next-of-kin-details', require('./borrower/components/show/NextOfKinDetails.vue'))
-Vue.component('bank-details', require('./borrower/components/show/BankDetails.vue'))
+//customer show and edit details components
+Vue.component('personal-details', require('./customer/components/show/PersonalDetails.vue'))
+Vue.component('next-of-kin-details', require('./customer/components/show/NextOfKinDetails.vue'))
+Vue.component('bank-details', require('./customer/components/show/BankDetails.vue'))
 
-//borrower loan details
-Vue.component('loan-details', require('./borrower/components/loan/New.vue'))
+//customer loan details
+Vue.component('loan-details', require('./customer/components/loan/New.vue'))
 
-//teller components
-Vue.component('change-password', require('./teller/components/ChangePassword.vue'))
+//agent components
+Vue.component('change-password', require('./agent/components/ChangePassword.vue'))
 
 //loan payment
-Vue.component('loan-payment', require('./borrower/components/payment/LoanPayment.vue'))
+Vue.component('loan-payment', require('./customer/components/payment/LoanPayment.vue'))
 
 //admin
 Vue.component('agent-details', require('./admin/components/Agent-details.vue'))
+Vue.component('approve-customer', require('./admin/components/ApproveCustomer.vue'))
+Vue.component('approve-loan', require('./admin/components/ApproveLoan.vue'))
 
 
 const app = new Vue({

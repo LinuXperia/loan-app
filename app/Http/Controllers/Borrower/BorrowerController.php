@@ -8,7 +8,6 @@ use App\BorrowerPersonalDetails;
 use App\BorrowerResidenceDetails;
 use App\BorrowerWorkDetails;
 use App\Http\Requests\Borrower\NextOfKinRequest;
-use App\Http\ViewComposers\LoanDetailsComposer;
 use App\Loan;
 use App\RefereesDetails;
 use App\Role;
@@ -26,30 +25,27 @@ class BorrowerController extends Controller
 
     public function __construct()
     {
-        //Auth::user()->hasRole('admin');
-
+        $this->middleware('auth');
     }
 
     /**
-     * Returns new borrower view
+     * Returns new customer view
      **/
-    public function newBorrower(){
-
+    public function newcustomer(){
 
         $data = [
-            'page' => 'New Borrower'
+            'page' => 'New customer'
         ];
 
-        return view('teller.borrower.new', $data);
+        return view('customer.new', $data);
     }
 
     /**
      * validate and post personal details
      * @param PersonalDetails $request
+     * @return \Illuminate\Http\JsonResponse
      */
     public function personalDetails(PersonalDetails $request){
-
-        //validate
 
         //create user
 
@@ -69,6 +65,7 @@ class BorrowerController extends Controller
 
         $details = new BorrowerPersonalDetails();
 
+        $details->account = $this->generateAccount();
         $details->title = $request->title;
         $details->fname = $request->fname;
         $details->sname = $request->sname;
@@ -97,6 +94,7 @@ class BorrowerController extends Controller
     /**
      * validate and update personal details
      * @param PersonalDetails $request
+     * @return \Illuminate\Http\JsonResponse
      */
     public function updatePersonalDetails(PersonalDetails $request){
 
@@ -143,7 +141,8 @@ class BorrowerController extends Controller
 
     /**
      *post next of kin details
-     * @param Request $request
+     * @param NextOfKinRequest $request
+     * @return \Illuminate\Http\JsonResponse
      */
     public function nextOfKin(NextOfKinRequest $request){
 
@@ -181,7 +180,8 @@ class BorrowerController extends Controller
 
     /**
      *post next of kin details
-     * @param Request $request
+     * @param NextOfKinRequest $request
+     * @return \Illuminate\Http\JsonResponse
      */
     public function updateNextOfKin(NextOfKinRequest $request){
 
@@ -219,8 +219,10 @@ class BorrowerController extends Controller
 
     /**
      * post next of bank details
-    * @param Request $request
-    **/
+     * @param Request $request
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function bankDetails(Request $request){
 
         //get user
@@ -257,7 +259,7 @@ class BorrowerController extends Controller
         $details->facility = $request->facility;
         $details->amount = $request->amount;
 
-        $user->borrowerBankDetails()->save($details);
+        $user->BorrowerBankDetails()->save($details);
 
         return response()->json([
 
@@ -267,9 +269,11 @@ class BorrowerController extends Controller
     }
 
     /**
-     * post borrower residence details
+     * post customer residence details
      * @param Request $request
-     **/
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function residenceDetails(Request $request){
 
         //get user
@@ -306,7 +310,7 @@ class BorrowerController extends Controller
         $details->house = $request->house;
         $details->permanent_address = $request->permanent_address;
 
-        $user->borrowerResidenceDetails()->save($details);
+        $user->BorrowerResidenceDetails()->save($details);
 
         return response()->json([
 
@@ -316,9 +320,11 @@ class BorrowerController extends Controller
     }
 
     /**
-     * post borrower work details
+     * post customer work details
      * @param Request $request
-     **/
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function workDetails(Request $request){
 
         //get user
@@ -360,7 +366,7 @@ class BorrowerController extends Controller
         $details->tenure = $request->tenure;
         $details->previous_employer = $request->previous_employer;
 
-        $user->borrowerWorkDetails()->save($details);
+        $user->BorrowerWorkDetails()->save($details);
 
         return response()->json([
 
@@ -370,9 +376,11 @@ class BorrowerController extends Controller
     }
 
     /**
-     * post borrower business details
+     * post customer business details
      * @param Request $request
-     **/
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function businessDetails(Request $request){
 
         //get user
@@ -414,7 +422,7 @@ class BorrowerController extends Controller
         $details->business_gross = $request->gross;
         $details->business_nature = $request->nature;
 
-        $user->borrowerWorkDetails()->save($details);
+        $user->BorrowerWorkDetails()->save($details);
 
         return response()->json([
 
@@ -424,9 +432,11 @@ class BorrowerController extends Controller
     }
 
     /**
-     * post borrower referees details
+     * post customer referees details
      * @param Request $request
-     **/
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function refereesDetails(Request $request){
 
         //get user
@@ -481,11 +491,12 @@ class BorrowerController extends Controller
     }
 
 
-
     /**
-     * complete borrowers profile
+     * complete customers profile
      * @param Request $request
-     **/
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function completeProfile(Request $request){
 
         //get user
@@ -516,17 +527,20 @@ class BorrowerController extends Controller
     }
 
     /**
-     * Borrower list view
-     **/
-    public function borrowerList(Builder $builder){
+     * customer list view
+     * @param Builder $builder
+     * @return $this
+     */
+    public function customerList(Builder $builder){
 
         if (request()->ajax()) {
 
-            $model = User::withRole('borrower')->get();
+            $model = User::withRole('customer')->get();
 
             foreach ($model as $m){
                 $m->registered_by = User::registeredBy($m->registered_by);
                 $m->idNumber = User::find($m->id)->borrowerPersonalDetails()->first()->idNumber;
+                $m->account = User::find($m->id)->borrowerPersonalDetails()->first()->account;
                 $m->mobile = User::find($m->id)->borrowerPersonalDetails()->first()->mobile;
 
             }
@@ -540,12 +554,13 @@ class BorrowerController extends Controller
         }
 
         $data = [
-            'page' => 'borrower list'
+            'page' => 'customer list'
         ];
 
         $html = $builder->columns([
 
-                ['data' => 'name', 'name' => 'name', 'title' => 'Sur Name'],
+            ['data' => 'account', 'name' => 'account', 'title' => 'Account No.'],
+            ['data' => 'name', 'name' => 'name', 'title' => 'Sur Name'],
                 ['data' => 'email', 'name' => 'email', 'title' => 'Email'],
                 [
                     'data' => 'idNumber',
@@ -568,23 +583,27 @@ class BorrowerController extends Controller
 
             ]);
 
-        return view('teller.borrower.borrowerList')->with(compact('html'))->with($data);
+        return view('customer.borrowerList')->with(compact('html'))->with($data);
 
     }
 
     /**
-     * Borrower details view
+     * customer details view
      * @param Builder $builder
      * @param $id
      * @return $this
      */
-    public function getBorrowerDetails(Builder $builder, $id){
+    public function getCustomerDetails(Builder $builder, $id){
 
         $personalDetails = User::findOrFail($id)->borrowerPersonalDetails;
         $personalDetails->email = User::findOrFail($id)->email;
+        $personalDetails->status = User::findOrFail($id)->status;
+        $personalDetails->approved = User::findOrFail($id)->approved;
 
         $nextOfKinDetails = User::findOrFail($id)->borrowerNextOfKin;
         $bankDetails = User::findOrFail($id)->borrowerBankDetails;
+
+        $customer = User::findOrFail($id);
 
         if (request()->ajax()) {
 
@@ -593,7 +612,7 @@ class BorrowerController extends Controller
 
             return DataTables::of($loan)
                 ->addColumn('action', function ($loan) {
-                    return '<a href="/borrower/'.$loan->user_id . '/loan/'.$loan->id.'" class="btn btn-xs btn-outline-info"> More Details</a>';
+                    return '<a href="/customer/'.$loan->user_id . '/loan/'.$loan->id.'" class="btn btn-xs btn-outline-info"> More Details</a>';
                 })
                 ->editColumn('id', 'ID: {{$id}}')
                 ->toJson();
@@ -621,32 +640,38 @@ class BorrowerController extends Controller
         ]);
 
         $data = [
-            'page' => 'borrower details',
+            'page' => 'customer details',
             'personalDetails' => $personalDetails,
             'nextOfKinDetails' => $nextOfKinDetails,
             'bankDetails' => $bankDetails,
-            'user_id' => $personalDetails->user_id
+            'user_id' => $personalDetails->user_id,
+            'customer' => $customer
         ];
 
 
-        return view('teller.borrower.borrowerDetails')->with(compact('html'))->with($data);
+        return view('customer.customerDetails')->with(compact('html'))->with($data);
     }
 
     /**
-     * return borrower loan details
+     * return customer loan details
      * @param $user_id
      * @param $loan_id
      * @return view
      */
-    public function getBorrowerLoanDetails($user_id, $loan_id){
+    public function getcustomerLoanDetails($user_id, $loan_id){
 
 
         $loan = Loan::findOrFail($loan_id);
 
         $loan->issued_by = User::getNameFromId($loan->agent);
 
+        if($loan->approved !== null){
+
+            $loan->approved_by = User::getNameFromId($loan->approved_by);
+        }
+
         //user details
-        $userDetails = BorrowerPersonalDetails::where('user_id',$user_id)->first();
+        $userDetails = borrowerPersonalDetails::where('user_id',$user_id)->first();
         $userDetails->email = User::findOrFail($user_id)->email;
 
         $data = [
@@ -658,17 +683,17 @@ class BorrowerController extends Controller
 
 
 
-        return view('teller.borrower.loanDetails')->with($data);
+        return view('customer.loanDetails')->with($data);
     }
 
     /**
-     * unapproved borrowers
+     * unapproved customers
      * @param Builder $builder
      * @return view
      */
-    public function unApprovedBorrower(Builder $builder){
+    public function unApprovedcustomer(Builder $builder){
 
-        $users = User::where('approved', false)->withRole('borrower')->get();
+        $users = User::where('approved', null)->withRole('customer')->get();
 
         foreach ($users as $user){
 
@@ -698,11 +723,343 @@ class BorrowerController extends Controller
         ]);
 
         $data = [
-            'page' => 'Inactive Borrowers',
+            'page' => 'Un approved Customer Accounts',
         ];
 
 
-        return view('admin.borrower.inactive')->with(compact('html'))->with($data);
+        return view('customer.unapproved')->with(compact('html'))->with($data);
 
     }
+
+
+    /**
+     * approved customers
+     * @param Builder $builder
+     * @return view
+     */
+    public function approvedcustomer(Builder $builder){
+
+        $users = User::where('approved', true)->withRole('customer')->get();
+
+        foreach ($users as $user){
+
+            $user->registred_by_name = User::getNameFromId($user->registered_by);
+            $user->mobile = $user->borrowerPersonalDetails()->first()->mobile;
+        }
+
+        if (request()->ajax()) {
+
+
+            return DataTables::of($users)
+                ->addColumn('action', function ($users) {
+                    return '<a href="details/'.$users->id.'" class="btn btn-xs btn-outline-info"> More Details</a>';                })
+                ->editColumn('id', 'ID: {{$id}}')
+                ->toJson();
+        }
+
+        $html = $builder->columns([
+
+            ['data' => 'name', 'name' => 'name', 'title' => 'Name'],
+            ['data' => 'email', 'name' => 'email', 'title' => 'Email'],
+            ['data' => 'mobile', 'name' => 'mobile', 'title' => 'Mobile No.'],
+            ['data' => 'registred_by_name', 'name' => 'registred_by_name', 'title' => 'Registered By'],
+            ['data' => 'created_at', 'name' => 'created_at', 'title' => 'Registred On'],
+            ['data' => 'action', 'name' => 'action', 'title' => 'Action'],
+
+        ]);
+
+        $data = [
+            'page' => 'Approved Customer Accounts',
+        ];
+
+
+        return view('customer.approved')->with(compact('html'))->with($data);
+
+    }
+
+    /**
+     * declined customers
+     * @param Builder $builder
+     * @return view
+     */
+    public function declinedcustomer(Builder $builder){
+
+        $users = User::where([['status', '=', 'declined'], ['approved', '=', false]])->withRole('customer')->get();
+
+        foreach ($users as $user){
+
+            $user->registred_by_name = User::getNameFromId($user->registered_by);
+            $user->mobile = $user->borrowerPersonalDetails()->first()->mobile;
+        }
+
+        if (request()->ajax()) {
+
+
+            return DataTables::of($users)
+                ->addColumn('action', function ($users) {
+                    return '<a href="details/'.$users->id.'" class="btn btn-xs btn-outline-info"> More Details</a>';                })
+                ->editColumn('id', 'ID: {{$id}}')
+                ->toJson();
+        }
+
+        $html = $builder->columns([
+
+            ['data' => 'name', 'name' => 'name', 'title' => 'Name'],
+            ['data' => 'email', 'name' => 'email', 'title' => 'Email'],
+            ['data' => 'mobile', 'name' => 'mobile', 'title' => 'Mobile No.'],
+            ['data' => 'registred_by_name', 'name' => 'registred_by_name', 'title' => 'Registered By'],
+            ['data' => 'created_at', 'name' => 'created_at', 'title' => 'Registred On'],
+            ['data' => 'action', 'name' => 'action', 'title' => 'Action'],
+
+        ]);
+
+        $data = [
+            'page' => 'Declined Customer Accounts',
+        ];
+
+
+        return view('customer.declined')->with(compact('html'))->with($data);
+
+    }
+
+    /**
+     * dormant customers
+     * @param Builder $builder
+     * @return view
+     */
+    public function dormantcustomer(Builder $builder){
+
+        $users = User::where([['status', '=', 'dormant'], ['approved', '=', true]])->withRole('customer')->get();
+
+        foreach ($users as $user){
+
+            $user->registred_by_name = User::getNameFromId($user->registered_by);
+            $user->mobile = $user->borrowerPersonalDetails()->first()->mobile;
+        }
+
+        if (request()->ajax()) {
+
+
+            return DataTables::of($users)
+                ->addColumn('action', function ($users) {
+                    return '<a href="details/'.$users->id.'" class="btn btn-xs btn-outline-info"> More Details</a>';                })
+                ->editColumn('id', 'ID: {{$id}}')
+                ->toJson();
+        }
+
+        $html = $builder->columns([
+
+            ['data' => 'name', 'name' => 'name', 'title' => 'Name'],
+            ['data' => 'email', 'name' => 'email', 'title' => 'Email'],
+            ['data' => 'mobile', 'name' => 'mobile', 'title' => 'Mobile No.'],
+            ['data' => 'registred_by_name', 'name' => 'registred_by_name', 'title' => 'Registered By'],
+            ['data' => 'created_at', 'name' => 'created_at', 'title' => 'Registred On'],
+            ['data' => 'action', 'name' => 'action', 'title' => 'Action'],
+
+        ]);
+
+        $data = [
+            'page' => 'Dormant Customer Accounts',
+        ];
+
+
+        return view('customer.dormant')->with(compact('html'))->with($data);
+
+    }
+
+
+    /**
+     * blacklisted customers
+     * @param Builder $builder
+     * @return view
+     */
+    public function blacklistedcustomer(Builder $builder){
+
+        $users = User::where('status', 'blacklisted')->withRole('customer')->get();
+
+        foreach ($users as $user){
+
+            $user->registred_by_name = User::getNameFromId($user->registered_by);
+            $user->mobile = $user->borrowerPersonalDetails()->first()->mobile;
+        }
+
+        if (request()->ajax()) {
+
+
+            return DataTables::of($users)
+                ->addColumn('action', function ($users) {
+                    return '<a href="details/'.$users->id.'" class="btn btn-xs btn-outline-info"> More Details</a>';                })
+                ->editColumn('id', 'ID: {{$id}}')
+                ->toJson();
+        }
+
+        $html = $builder->columns([
+
+            ['data' => 'name', 'name' => 'name', 'title' => 'Name'],
+            ['data' => 'email', 'name' => 'email', 'title' => 'Email'],
+            ['data' => 'mobile', 'name' => 'mobile', 'title' => 'Mobile No.'],
+            ['data' => 'registred_by_name', 'name' => 'registred_by_name', 'title' => 'Registered By'],
+            ['data' => 'created_at', 'name' => 'created_at', 'title' => 'Registred On'],
+            ['data' => 'action', 'name' => 'action', 'title' => 'Action'],
+
+        ]);
+
+        $data = [
+            'page' => 'Blacklisted Customer Accounts',
+        ];
+
+
+        return view('customer.blacklisted')->with(compact('html'))->with($data);
+
+    }
+
+
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function changeApproveStatus(Request $request){
+
+        $customer = User::findOrFail($request->id);
+
+        if(!$customer){
+            return response()->json([
+                'errors' => [
+                    'approved' => [
+                        'This customer does not exist'
+                    ]
+                ]
+            ], 406);
+        }
+
+        $approved = '';
+
+        if($request->status == 'active'){
+
+            $approved = true;
+
+        }elseif ($request->status == 'declined'){
+
+            $approved = false;
+        }
+
+        $customer->approved = $approved;
+        $customer->status = $request->status;
+        $customer->save();
+
+        return response()->json([
+            'success' => [
+                'approved' => [
+                    'Approved Status Updated'
+                ],
+                'status' => $approved
+            ]
+        ], 200);
+    }
+
+    /**
+     * activate or deactivate customer account
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function changeActiveStatus(Request $request){
+
+        $customer = User::findOrFail($request->id);
+
+        if(!$customer){
+            return response()->json([
+                'errors' => [
+                    'approved' => [
+                        'This customer does not exist'
+                    ]
+                ]
+            ], 406);
+        }
+
+        $approved = '';
+
+        if($request->status == 'active'){
+
+            $approved = true;
+
+        }elseif ($request->status == 'dormant'){
+
+            $approved = $customer->approved;
+        }
+
+        $customer->approved = $approved;
+        $customer->status = $request->status;
+        $customer->save();
+
+        return response()->json([
+            'success' => [
+                'approved' => [
+                    'Account status has been updated'
+                ]
+            ]
+        ], 200);
+    }
+
+    /**
+     * blacklist customer
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function blacklistcustomer(Request $request){
+
+        $customer = User::findOrFail($request->id);
+
+        if(!$customer){
+            return response()->json([
+                'errors' => [
+                    'approved' => [
+                        'This customer does not exist'
+                    ]
+                ]
+            ], 406);
+        }
+
+        $approved = '';
+
+        if($request->status == 'active'){
+
+            $approved = true;
+
+        }elseif ($request->status == 'blacklisted'){
+
+            $approved = $customer->approved;
+        }
+
+        $customer->approved = $approved;
+        $customer->status = $request->status;
+        $customer->save();
+
+        return response()->json([
+            'success' => [
+                'approved' => [
+                    'Blacklist status has been updated'
+                ]
+            ]
+        ], 200);
+    }
+
+
+    /**
+     * generate account number
+     * @return int
+     */
+    protected  function generateAccountNumber() {
+
+        $number = mt_rand(1000000000, 9999999999); // better than rand()
+
+        // call the same function if the account number exists already
+        if (BorrowerPersonalDetails::accountNumberExist($number)) {
+
+            return $this->generateAccountNumber();
+        }
+
+        // otherwise, it's valid and can be used
+        return $number;
+    }
+
 }

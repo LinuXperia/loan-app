@@ -19,34 +19,34 @@ class Loan extends Model
     }
 
     /**
-     * total borrower loan borrowed
+     * total customer loan borrowed
      * @param $query
      * @param $id
      * @return
      */
     public function scopeTotalLoan($query, $id){
 
-        return $query->where('user_id', $id)
+        return $query->where([['user_id','=', $id],['approved', '=', true]])
             ->sum('amount_borrowed');
     }
 
     /**
-     * total borrower loan interest
+     * total customer loan interest
      * @param $query
      * @param $id
      * @return
      */
     public function scopeTotalInterest($query, $id){
 
-        $totalBorrowed = $query->where('user_id', $id)->sum('amount_borrowed');
-        $totalToPay = $query->where('user_id', $id)->sum('amount_to_pay');
+        $totalBorrowed = $query->where([['user_id','=', $id],['approved', '=', true]])->sum('amount_borrowed');
+        $totalToPay = $query->where([['user_id','=', $id],['approved', '=', true]])->sum('amount_to_pay');
 
         return $totalToPay - $totalBorrowed;
     }
 
     public function scopeLoanBalance($id, $total_loan){
 
-        $totalPayed = DB::table('payments')->where('loan_id', $id)->sum('amount');
+        $totalPayed = DB::table('payments')->where([['loan_id','=', $id],['approved', '=', true]])->sum('amount');
 
         return $total_loan - $totalPayed ;
 

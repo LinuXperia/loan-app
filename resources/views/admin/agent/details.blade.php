@@ -8,7 +8,7 @@
                     <i class="fa fa-align-justify"></i> <strong>AGENT DETAILS</strong>
                 </div>
                 <div class="card-body">
-
+                    {{ $agentDetails }}
                     <agent-details agent-details="{{ $agentDetails }}"></agent-details>
 
                 </div>

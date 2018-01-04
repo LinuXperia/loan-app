@@ -2,7 +2,6 @@
 
 namespace App;
 
-use App\Http\Requests\Borrower\PersonalDetails;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Support\Facades\DB;

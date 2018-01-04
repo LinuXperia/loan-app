@@ -125,28 +125,28 @@ Route::group(['prefix' => 'customer', 'namespace' => 'Borrower', 'middleware' =>
     Route::get('/list-of-customers', 'BorrowerController@customerList')->name('customer.list');
 
     //customer list
-    //Route::get('/get-customer-list', 'BorrowerController@getcustomerList')->name('getcustomerList');
+    //Route::get('/get-customer-list', 'BorrowerController@getCustomerList')->name('getcustomerList');
 
     //customer Details
     Route::get('/details/{id}', 'BorrowerController@getCustomerDetails')->name('customer.details');
 
     //customer loan details
-    Route::get('/{user_id}/loan/{loan_id}','BorrowerController@getcustomerLoanDetails')->name('customer.loanDetails');
+    Route::get('/{user_id}/loan/{loan_id}','BorrowerController@getCustomerLoanDetails')->name('customer.loanDetails');
 
     //unapproved customers
-    Route::get('/unapproved-customers', 'BorrowerController@unApprovedcustomer')->middleware('role:admin')->name('unapproved.customers');
+    Route::get('/unapproved-customers', 'BorrowerController@unApprovedCustomer')->middleware('role:admin')->name('unapproved.customers');
 
     //approved customers
-    Route::get('/approved-customers', 'BorrowerController@approvedcustomer')->middleware('role:admin')->name('approved.customers');
+    Route::get('/approved-customers', 'BorrowerController@approvedCustomer')->middleware('role:admin')->name('approved.customers');
 
     //declined customers
-    Route::get('/declined-customers', 'BorrowerController@declinedcustomer')->middleware('role:admin')->name('declined.customers');
+    Route::get('/declined-customers', 'BorrowerController@declinedCustomer')->middleware('role:admin')->name('declined.customers');
 
     //dormant customers
-    Route::get('/dormant-customers', 'BorrowerController@dormantcustomer')->middleware('role:admin')->name('dormant.customers');
+    Route::get('/dormant-customers', 'BorrowerController@dormantCustomer')->middleware('role:admin')->name('dormant.customers');
 
     //blacklisted customers
-    Route::get('/blacklisted-customers', 'BorrowerController@blacklistedcustomer')->middleware('role:admin')->name('blacklisted.customers');
+    Route::get('/blacklisted-customers', 'BorrowerController@blacklistedCustomer')->middleware('role:admin')->name('blacklisted.customers');
 
     //change customer approve status
     Route::put('/change-approve-status', 'BorrowerController@changeApproveStatus')->middleware('role:admin')->name('change.customers.approve.status');
@@ -155,7 +155,7 @@ Route::group(['prefix' => 'customer', 'namespace' => 'Borrower', 'middleware' =>
     Route::put('/change-active-status', 'BorrowerController@changeActiveStatus')->middleware('role:admin')->name('change.customers.active.status');
 
     //blacklist customer
-    Route::put('/blacklist-customer', 'BorrowerController@blacklistcustomer')->middleware('role:admin')->name('blacklist.customer');
+    Route::put('/blacklist-customer', 'BorrowerController@blacklistCustomer')->middleware('role:admin')->name('blacklist.customer');
 
 });
 
@@ -171,7 +171,7 @@ Route::group(['prefix' => 'loans', 'namespace' => 'Loans', 'middleware' => 'auth
     Route::get('/index', 'LoansController@index')->middleware('role:agent')->name('loans.index');
 
     //Loan Details
-    Route::get('/{id}', 'LoansController@newLoan')->name('loan.new');
+    Route::get('/{id}/new', 'LoansController@newLoan')->name('loan.new');
 
     //post loan details
     Route::post('/loan-details', 'LoansController@setLoanDetails')->middleware('role:agent')->name('loan.details');
@@ -185,6 +185,18 @@ Route::group(['prefix' => 'loans', 'namespace' => 'Loans', 'middleware' => 'auth
     //approve loan
     Route::put('/approve-loan','LoansController@approveLoan')->middleware('role:admin')->name('approve.loan');
 
+    //get approved loan
+    Route::get('/approved','LoansController@approvedLoans')->middleware('role:admin')->name('approved.loans');
+
+    //get all loan
+    Route::get('/all','LoansController@allLoans')->middleware('role:admin')->name('all.loans');
+
+    //get declined loan
+    Route::get('/declined','LoansController@declinedLoans')->middleware('role:admin')->name('declined.loans');
+
+    //unapproved payments list
+    Route::get('/unapproved','LoansController@unapprovedLoans')->middleware('role:admin')->name('unapproved.loans');
+
     Route::group(['prefix' => 'payment'], function (){
         //loan payment
         Route::get('/payment/{id}', 'LoansController@loanPayment')->name('loan.payment');
@@ -197,6 +209,15 @@ Route::group(['prefix' => 'loans', 'namespace' => 'Loans', 'middleware' => 'auth
 
         //unapproved payments list
         Route::get('/unapproved', 'LoansController@unapprovedPayments')->middleware('role:admin')->name('unapproved.payments');
+
+        //approved payments list
+        Route::get('/approved', 'LoansController@approvedPayments')->middleware('role:admin')->name('approved.payments');
+
+        //declined payments list
+        Route::get('/declined', 'LoansController@declinedPayments')->middleware('role:admin')->name('declined.payments');
+
+        //all payments list
+        Route::get('/all', 'LoansController@allPayments')->middleware('role:admin')->name('all.payments');
 
         //approve payments list
         Route::put('/approve-payment', 'LoansController@approvePayment')->middleware('role:admin')->name('approve.payments');

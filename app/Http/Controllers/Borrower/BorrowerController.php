@@ -658,7 +658,7 @@ class BorrowerController extends Controller
      * @param $loan_id
      * @return view
      */
-    public function getcustomerLoanDetails($user_id, $loan_id){
+    public function getCustomerLoanDetails($user_id, $loan_id){
 
 
         $loan = Loan::findOrFail($loan_id);
@@ -691,7 +691,7 @@ class BorrowerController extends Controller
      * @param Builder $builder
      * @return view
      */
-    public function unApprovedcustomer(Builder $builder){
+    public function unApprovedCustomer(Builder $builder){
 
         $users = User::where('approved', null)->withRole('customer')->get();
 
@@ -737,7 +737,7 @@ class BorrowerController extends Controller
      * @param Builder $builder
      * @return view
      */
-    public function approvedcustomer(Builder $builder){
+    public function approvedCustomer(Builder $builder){
 
         $users = User::where('approved', true)->withRole('customer')->get();
 
@@ -782,7 +782,7 @@ class BorrowerController extends Controller
      * @param Builder $builder
      * @return view
      */
-    public function declinedcustomer(Builder $builder){
+    public function declinedCustomer(Builder $builder){
 
         $users = User::where([['status', '=', 'declined'], ['approved', '=', false]])->withRole('customer')->get();
 
@@ -827,7 +827,7 @@ class BorrowerController extends Controller
      * @param Builder $builder
      * @return view
      */
-    public function dormantcustomer(Builder $builder){
+    public function dormantCustomer(Builder $builder){
 
         $users = User::where([['status', '=', 'dormant'], ['approved', '=', true]])->withRole('customer')->get();
 
@@ -873,7 +873,7 @@ class BorrowerController extends Controller
      * @param Builder $builder
      * @return view
      */
-    public function blacklistedcustomer(Builder $builder){
+    public function blacklistedCustomer(Builder $builder){
 
         $users = User::where('status', 'blacklisted')->withRole('customer')->get();
 

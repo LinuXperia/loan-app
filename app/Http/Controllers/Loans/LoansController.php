@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Loans;
 
-use App\customerPersonalDetails;
 use App\Http\Requests\Loan\LoanDetailsRequest;
 use App\Http\Requests\Loan\LoanPaymentRequest;
 use App\Loan;
@@ -223,6 +222,159 @@ class LoansController extends Controller
             $path, $image, 'test.png'
         );
 
+    }
+
+    /**
+     * all loans
+     * @param Builder $builder
+     * @return $this
+     */
+    public function allLoans(Builder $builder){
+
+        $loans = Loan::all();
+
+        if (request()->ajax()) {
+
+
+            return DataTables::of($loans)
+                ->addColumn('action', function ($loans) {
+                    return '<a href="/customer/' . $loans->user_id .'/loan/'.$loans->id.'" class="btn btn-xs btn-outline-info"> More Details</a>';                })
+                ->editColumn('id', 'ID: {{$id}}')
+                ->toJson();
+        }
+
+        $html = $builder
+
+            ->columns([
+
+                ['data' => 'reference_no', 'name' => 'reference_no', 'title' => 'Reference No.'],
+                ['data' => 'amount_borrowed', 'name' => 'amount_borrowed', 'title' => 'Amount'],
+                ['data' => 'amount_to_pay', 'name' => 'amount_to_pay', 'title' => 'Total Amount'],
+                ['data' => 'status', 'name' => 'status', 'title' => 'Loan Status'],
+                ['data' => 'created_at', 'name' => 'created_at', 'title' => 'Applied On'],
+                ['data' => 'action', 'name' => 'action', 'title' => 'Action'],
+
+            ])
+            ->parameters([
+                'buttons' => ['pdf'],
+            ]);
+
+        $data = [
+            'page' => 'All Loan',
+        ];
+
+        return view('loans.all')->with(compact('html'))->with($data);
+    }
+
+    /**
+     * Approved loans
+     * @param Builder $builder
+     * @return $this
+     */
+     public function approvedLoans(Builder $builder){
+
+        $loans = Loan::where('approved', true);
+
+        if (request()->ajax()) {
+
+
+            return DataTables::of($loans)
+                ->addColumn('action', function ($loans) {
+                    return '<a href="/customer/' . $loans->user_id .'/loan/'.$loans->id.'" class="btn btn-xs btn-outline-info"> More Details</a>';                })
+                ->editColumn('id', 'ID: {{$id}}')
+                ->toJson();
+        }
+
+        $html = $builder->columns([
+
+            ['data' => 'reference_no', 'name' => 'reference_no', 'title' => 'Reference No.'],
+            ['data' => 'amount_borrowed', 'name' => 'amount_borrowed', 'title' => 'Amount'],
+            ['data' => 'amount_to_pay', 'name' => 'amount_to_pay', 'title' => 'Total Amount'],
+            ['data' => 'status', 'name' => 'status', 'title' => 'Loan Status'],
+            ['data' => 'created_at', 'name' => 'created_at', 'title' => 'Applied On'],
+            ['data' => 'action', 'name' => 'action', 'title' => 'Action'],
+
+        ]);
+
+        $data = [
+            'page' => 'Approved Loans',
+        ];
+
+        return view('loans.approved')->with(compact('html'))->with($data);
+     }
+
+    /**
+     * Declined loans
+     * @param Builder $builder
+     * @return $this
+     */
+    public function declinedLoans(Builder $builder){
+
+        $loans = Loan::where('approved', false);
+
+        if (request()->ajax()) {
+
+
+            return DataTables::of($loans)
+                ->addColumn('action', function ($loans) {
+                    return '<a href="/customer/' . $loans->user_id .'/loan/'.$loans->id.'" class="btn btn-xs btn-outline-info"> More Details</a>';                })
+                ->editColumn('id', 'ID: {{$id}}')
+                ->toJson();
+        }
+
+        $html = $builder->columns([
+
+            ['data' => 'reference_no', 'name' => 'reference_no', 'title' => 'Reference No.'],
+            ['data' => 'amount_borrowed', 'name' => 'amount_borrowed', 'title' => 'Amount'],
+            ['data' => 'amount_to_pay', 'name' => 'amount_to_pay', 'title' => 'Total Amount'],
+            ['data' => 'status', 'name' => 'status', 'title' => 'Loan Status'],
+            ['data' => 'created_at', 'name' => 'created_at', 'title' => 'Applied On'],
+            ['data' => 'action', 'name' => 'action', 'title' => 'Action'],
+
+        ]);
+
+        $data = [
+            'page' => 'Declined Loans',
+        ];
+
+        return view('loans.declined')->with(compact('html'))->with($data);
+    }
+
+    /**
+     * unApproved loans
+     * @param Builder $builder
+     * @return $this
+     */
+    public function unapprovedLoans(Builder $builder){
+
+        $loans = Loan::where('approved', null);
+
+        if (request()->ajax()) {
+
+
+            return DataTables::of($loans)
+                ->addColumn('action', function ($loans) {
+                    return '<a href="/customer/' . $loans->user_id .'/loan/'.$loans->id.'" class="btn btn-xs btn-outline-info"> More Details</a>';                })
+                ->editColumn('id', 'ID: {{$id}}')
+                ->toJson();
+        }
+
+        $html = $builder->columns([
+
+            ['data' => 'reference_no', 'name' => 'reference_no', 'title' => 'Reference No.'],
+            ['data' => 'amount_borrowed', 'name' => 'amount_borrowed', 'title' => 'Amount'],
+            ['data' => 'amount_to_pay', 'name' => 'amount_to_pay', 'title' => 'Total Amount'],
+            ['data' => 'status', 'name' => 'status', 'title' => 'Loan Status'],
+            ['data' => 'created_at', 'name' => 'created_at', 'title' => 'Applied On'],
+            ['data' => 'action', 'name' => 'action', 'title' => 'Action'],
+
+        ]);
+
+        $data = [
+            'page' => 'unapproved loans',
+        ];
+
+        return view('loans.unapproved')->with(compact('html'))->with($data);
     }
 
     /**
@@ -496,6 +648,117 @@ class LoansController extends Controller
 
 
         return view('payments.unapproved')->with(compact('html'))->with($data);
+    }
+
+    /**
+     * approved payments
+     * @param Builder $builder
+     * @return $this
+     */
+    public function approvedPayments(Builder $builder){
+
+        $payments = Payment::where('approved', true);
+
+        if (request()->ajax()) {
+
+
+            return DataTables::of($payments)
+                ->addColumn('action', function ($payments) {
+                    return '<a href="details/'.$payments->id.'" class="btn btn-xs btn-outline-info"> More Details</a>';                })
+                ->editColumn('id', 'ID: {{$id}}')
+                ->toJson();
+        }
+
+        $html = $builder->columns([
+
+            ['data' => 'reference_no', 'name' => 'reference_no', 'title' => 'Reference No.'],
+            ['data' => 'amount', 'name' => 'amount', 'title' => 'Amount'],
+            ['data' => 'payment_mode', 'name' => 'payment_mode', 'title' => 'Payment Mode'],
+            ['data' => 'created_at', 'name' => 'created_at', 'title' => 'Payed On'],
+            ['data' => 'action', 'name' => 'action', 'title' => 'Action'],
+
+        ]);
+
+        $data = [
+            'page' => 'Approved Loan Payments',
+        ];
+
+
+        return view('payments.approved')->with(compact('html'))->with($data);
+    }
+
+    /**
+     * declined payments
+     * @param Builder $builder
+     * @return $this
+     */
+    public function declinedPayments(Builder $builder){
+
+        $payments = Payment::where('approved', false);
+
+        if (request()->ajax()) {
+
+
+            return DataTables::of($payments)
+                ->addColumn('action', function ($payments) {
+                    return '<a href="details/'.$payments->id.'" class="btn btn-xs btn-outline-info"> More Details</a>';                })
+                ->editColumn('id', 'ID: {{$id}}')
+                ->toJson();
+        }
+
+        $html = $builder->columns([
+
+            ['data' => 'reference_no', 'name' => 'reference_no', 'title' => 'Reference No.'],
+            ['data' => 'amount', 'name' => 'amount', 'title' => 'Amount'],
+            ['data' => 'payment_mode', 'name' => 'payment_mode', 'title' => 'Payment Mode'],
+            ['data' => 'created_at', 'name' => 'created_at', 'title' => 'Payed On'],
+            ['data' => 'action', 'name' => 'action', 'title' => 'Action'],
+
+        ]);
+
+        $data = [
+            'page' => 'Declined Loan Payments',
+        ];
+
+
+        return view('payments.declined')->with(compact('html'))->with($data);
+    }
+
+    /**
+     * all payments
+     * @param Builder $builder
+     * @return $this
+     */
+    public function allPayments(Builder $builder){
+
+        $payments = Payment::all();
+
+        if (request()->ajax()) {
+
+
+            return DataTables::of($payments)
+                ->addColumn('action', function ($payments) {
+                    return '<a href="details/'.$payments->id.'" class="btn btn-xs btn-outline-info"> More Details</a>';                })
+                ->editColumn('id', 'ID: {{$id}}')
+                ->toJson();
+        }
+
+        $html = $builder->columns([
+
+            ['data' => 'reference_no', 'name' => 'reference_no', 'title' => 'Reference No.'],
+            ['data' => 'amount', 'name' => 'amount', 'title' => 'Amount'],
+            ['data' => 'payment_mode', 'name' => 'payment_mode', 'title' => 'Payment Mode'],
+            ['data' => 'created_at', 'name' => 'created_at', 'title' => 'Payed On'],
+            ['data' => 'action', 'name' => 'action', 'title' => 'Action'],
+
+        ]);
+
+        $data = [
+            'page' => 'All Loan Payments',
+        ];
+
+
+        return view('payments.all')->with(compact('html'))->with($data);
     }
 
     /**

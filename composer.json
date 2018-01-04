@@ -7,6 +7,7 @@
     "require": {
         "php": ">=7.0.0",
         "algolia/algoliasearch-client-php": "^1.25",
+        "barryvdh/laravel-dompdf": "^0.8.1",
         "doctrine/dbal": "^2.6",
         "fideloper/proxy": "~3.3",
         "guzzlehttp/guzzle": "^6.3",
@@ -14,6 +15,7 @@
         "laravel/scout": "^3.0",
         "laravel/tinker": "~1.0",
         "webpatser/laravel-uuid": "^3.0",
+        "yajra/laravel-datatables-buttons": "^3.0",
         "yajra/laravel-datatables-html": "^3.0",
         "yajra/laravel-datatables-oracle": "~8.0"
     },

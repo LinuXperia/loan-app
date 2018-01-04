@@ -57,7 +57,7 @@
                                     <template slot-scope="{ result }">
 
                                         <div class="result">
-                                            <a :href="result.user_id">
+                                            <a :href='result.user_id + "/new"'>
 
                                                 <span class="title">Account No : </span> @{{ result.account }}  |
                                                 <span class="title">Surname : </span> @{{ result.sname }}  |

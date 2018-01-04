@@ -36,16 +36,16 @@
                 <a class="nav-link nav-dropdown-toggle" href="#"><i class="icon-grid"></i> Loan Details</a>
                 <ul class="nav-dropdown-items">
                     <li class="nav-item">
-                        <a class="nav-link" href="#"><i class="icon-dislike"></i> New Loans</a>
+                        <a class="nav-link" href="{{ route('unapproved.loans') }}"><i class="icon-dislike"></i> New Loans</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#"><i class="icon-like"></i> Approved Loans</a>
+                        <a class="nav-link" href="{{ route('approved.loans') }}"><i class="icon-like"></i> Approved Loans</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#"><i class="icon-ban"></i> Declined Loans</a>
+                        <a class="nav-link" href="{{ route('declined.loans') }}"><i class="icon-ban"></i> Declined Loans</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#"><i class="icon-list"></i> All Loans</a>
+                        <a class="nav-link" href="{{ route('all.loans') }}"><i class="icon-list"></i> All Loans</a>
                     </li>
                 </ul>
             </li>
@@ -57,13 +57,13 @@
                         <a class="nav-link" href="{{ route('unapproved.payments') }}"><i class="icon-credit-card"></i> New Payments</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#"><i class="icon-eye"></i> Approved Payments</a>
+                        <a class="nav-link" href="{{ route('approved.payments') }}"><i class="icon-eye"></i> Approved Payments</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#"><i class="icon-ban"></i> Declined Payments</a>
+                        <a class="nav-link" href="{{ route('declined.payments') }}"><i class="icon-ban"></i> Declined Payments</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#"><i class="icon-list"></i> All Payments</a>
+                        <a class="nav-link" href="{{ route('all.payments') }}"><i class="icon-list"></i> All Payments</a>
                     </li>
                 </ul>
             </li>

@@ -100728,7 +100728,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         },
         setStatus: function setStatus() {
 
-            this.active = this.customer.status === 'active' && this.customer.approved === true ? true : false;
+            this.active = this.customer.status === 'active' && this.customer.approved == true ? true : false;
             this.blacklist = this.customer.status === 'blacklisted' ? true : false;
         },
         approve: function approve(status) {
@@ -100908,7 +100908,7 @@ var render = function() {
                           }
                         }
                       },
-                      [_vm._v(" DEACTIVATE CUSTOMER ACCOUNT ")]
+                      [_vm._v("CUSTOMER ACCOUNT DORMANT")]
                     )
                   : _vm._e()
               ])

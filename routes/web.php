@@ -24,6 +24,16 @@ Route::get('/home', 'HomeController@index')->name('home');
 Route::post('/change-password','HomeController@changePassword')->name('agent.changePassword');
 
 
+//test send email
+
+Route::get('/send-email', function (){
+
+    $user = \App\User::findOrFail(13);
+
+    return new App\Mail\CustomerCompleteAccount($user);
+});
+
+
 /**
 ===============================================================================
  ****************************ADMIN ROUTES**************************************
@@ -54,7 +64,7 @@ Route::group(['prefix' => 'admin','namespace' => 'Admin', 'middleware' =>['auth'
     Route::get('/all-agents', 'AdminController@allAgents')->name('all.agents');
 
     //agent details
-    Route::get('/agent/{id}', 'AdminController@agentsDetails')->name('agent.details');
+    Route::get('/agent/details/{id}', 'AdminController@agentsDetails')->name('agent.details');
 
     //Change Account status
     Route::put('/change-status', 'AdminController@changeStatus')->name('agent.change.status');
@@ -86,10 +96,13 @@ Route::group(['prefix' => 'agent', 'namespace' => 'Teller', 'middleware' => ['au
 ===============================================================================
  **/
 
-Route::group(['prefix' => 'customer', 'namespace' => 'Borrower', 'middleware' => 'auth'], function (){
+Route::group(/**
+ *
+ */
+    ['prefix' => 'customer', 'namespace' => 'Borrower', 'middleware' => 'auth'], function (){
 
     //new customer
-    Route::get('/new-customer', 'BorrowerController@newcustomer')->middleware('role:agent')->name('new.customer');
+    Route::get('/new-customer', 'BorrowerController@newCustomer')->middleware('role:agent')->name('new.customer');
 
     //post personal details form vue
     Route::post('/customer-personal-details', 'BorrowerController@personalDetails')->middleware('role:agent')->name('customer.personalDetails');

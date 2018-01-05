@@ -20,7 +20,7 @@
         <div class="row" v-if="customer.approved !== null">
             <div class="col-sm-6"  v-if="!blacklist">
                 <button class="btn btn-outline-success btn-block mb-4" v-if="!active" @click="activate('active')"> ACTIVATE CUSTOMER ACCOUNT</button>
-                <button class="btn btn-danger btn-block" v-if="active" @click="activate('dormant')"> DEACTIVATE CUSTOMER ACCOUNT </button>
+                <button class="btn btn-danger btn-block" v-if="active" @click="activate('dormant')">CUSTOMER ACCOUNT DORMANT</button>
             </div>
             <div class="col-sm-6" :class=" blacklist ? 'offset-3' : ''">
                 <button class="btn btn-danger btn-block mb-4" v-if="!blacklist" @click="blacklisted('blacklisted')"><i class="icon-plus"></i> BLACKLIST CUSTOMER ACCOUNT </button>
@@ -51,7 +51,7 @@
 
             setStatus(){
 
-                this.active = this.customer.status === 'active' && this.customer.approved === true ? true : false
+                this.active = this.customer.status === 'active' && this.customer.approved == true ? true : false
                 this.blacklist = this.customer.status === 'blacklisted' ? true : false
 
             },

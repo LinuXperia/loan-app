@@ -11,7 +11,7 @@
                 </div>
                 <div class="card-body">
                     <div class="row loan-details">
-                        <div class="col-sm-6">
+                        <div class="col-sm-4">
                             <div class="row">
                                 <div class="col-sm-4">
                                     <h5 class="text-dark text-center" style="margin-top: 15%"><Strong class="title">REFERENCE NO: </Strong> </h5>
@@ -24,7 +24,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-sm-6">
+                        <div class="col-sm-4">
                             <div class="row">
                                 <div class="col-sm-4">
                                     <h5 class="text-dark text-center" style="margin-top: 15%"><Strong class="title">ISSUED BY: </Strong> </h5>
@@ -33,6 +33,22 @@
                                 <div class="col-sm-8">
                                     <div class="alert alert-info text-center">{{  $loan->issued_by ?  $loan->issued_by : '' }}</div>
 
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="row">
+                                <div class="col-sm-4">
+                                    <h5 class="text-dark text-center" style="margin-top: 15%"><Strong class="title">APPROVED BY: </Strong> </h5>
+
+                                </div>
+                                <div class="col-sm-8">
+                                    @if($loan->approved !== null && $loan->approved_by !== '')
+                                        <div class="alert alert-success text-center">{{ $loan->approved_by }}</div>
+
+                                    @elseif($loan->approved === null)
+                                        <div class="alert alert-danger text-center">Loan Not Approved</div>
+                                    @endif
                                 </div>
                             </div>
                         </div>
@@ -83,16 +99,11 @@
                         <div class="col-sm-4">
                             <div class="row">
                                 <div class="col-sm-4">
-                                    <h5 class="text-dark text-center" style="margin-top: 15%"><Strong class="title">APPROVED BY: </Strong> </h5>
+                                    <h5 class="text-dark text-center" style="margin-top: 15%"><Strong class="title">PAID AMOUNT: </Strong> </h5>
 
                                 </div>
                                 <div class="col-sm-8">
-                                    @if($loan->approved !== null && $loan->approved_by !== '')
-                                        <div class="alert alert-success text-center">{{ $loan->approved_by }}</div>
-
-                                    @elseif($loan->approved === null)
-                                        <div class="alert alert-danger text-center">Loan Not Approved</div>
-                                    @endif
+                                    <div class="alert alert-success text-center">KSH: {{ number_format(($loan->amount_to_pay - $loan->loanBalance), 2) }}</div>
                                 </div>
                             </div>
                         </div>
@@ -137,7 +148,7 @@
 
                                 </div>
                                 <div class="col-sm-8">
-                                    <div class="alert alert-info text-center">KSH: LOAN BALANCE</div>
+                                    <div class="alert alert-info text-center">KSH: {{ number_format($loan->loanBalance, 2) }}</div>
 
                                 </div>
                             </div>

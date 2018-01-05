@@ -43,7 +43,7 @@ class LoanDetailsComposer
 
         $totalPayment = Payment::totalPayment($view->user_id);
 
-        $totalBalance =  $totalLoan - $totalPayment;
+        $totalBalance =  ($totalLoan + $totalInterest )- $totalPayment;
 
 
         $view->with('totalLoan', $totalLoan);

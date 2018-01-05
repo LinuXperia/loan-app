@@ -2,6 +2,7 @@
 
 @section('beforeStyles')
     <link rel="stylesheet" href="//cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.0.3/css/buttons.dataTables.min.css">
 @endsection
 @section('content')
     @include('customer.partial._loan_details')
@@ -68,7 +69,7 @@
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-sm-12">
-                                    {!! $html->table(['class' => 'table table-hover table-responsive-sm table-striped']) !!}
+                                    {!! $dataTable->table(['class' => 'table table-responsive-sm table-striped'], false) !!}
                                 </div>
                             </div>
                         </div>
@@ -92,15 +93,7 @@
 
 @section('scripts')
     <script src="//cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
-    <script src="https://cdn.datatables.net/1.10.16/js/dataTables.bootstrap4.min.js"></script>
-    {!! $html->scripts() !!}
-    <script>
-
-       /* $("#myTab").on("click", function(){
-            var _tab=$(this).closest(".tab-pane").attr("id");
-            $("a[href='#"+_tab+"']").parent().hide();
-            $("#"+_tab).hide();
-        });*/
-
-    </script>
+    <script src="https://cdn.datatables.net/buttons/1.0.3/js/dataTables.buttons.min.js"></script>
+    <script src="/vendor/datatables/buttons.server-side.js"></script>
+    {!! $dataTable->scripts() !!}
 @endsection

@@ -3,15 +3,15 @@
 namespace App\Http\Controllers\Admin;
 
 use App\AgentDetails;
+use App\DataTables\Agents\ActiveDataTable;
+use App\DataTables\Agents\AllDataTable;
+use App\DataTables\Agents\DeactivatedDataTable;
 use App\Mail\SendAgentAccountDetails;
-use App\Role;
 use App\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
-use Yajra\DataTables\DataTables;
-use Yajra\DataTables\Html\Builder;
 
 /**
  * Class AdminController
@@ -99,128 +99,51 @@ class AdminController extends Controller
 
     /**
      * active agents
-     * @param Builder $builder
+     * @param ActiveDataTable $dataTable
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function activeAgents(Builder $builder){
+    public function activeAgents(ActiveDataTable $dataTable){
 
-        $agents = User::withRole('agent')->where('status', 'active')->get();
+        $data = [
+            'page' => 'Active Agent Accounts'
+        ];
 
-        foreach ($agents as $agent){
-            $agent->registered_by_name = User::getNameFromId($agent->registered_by);
-        }
+        return $dataTable->render('admin.agent.active', $data);
 
-       if (request()->ajax()) {
-
-           return DataTables::of($agents)
-               ->addColumn('action', function ($agents) {
-                   return '<a href="/admin/agent/'.$agents->id.'" class="btn btn-xs btn-outline-info"> More Details</a>';
-               })
-               ->editColumn('id', 'ID: {{$id}}')
-               ->toJson();
-       }
-
-       $data = [
-           'page' => 'Active Agents'
-       ];
-
-       $html = $builder->columns([
-               ['data' => 'name', 'name' => 'name', 'title' => 'Name'],
-               ['data' => 'email', 'name' => 'email', 'title' => 'Email'],
-               ['data' => 'status', 'name' => 'status', 'title' => 'Status'],
-               ['data' => 'registered_by_name', 'name' => 'registered_by_name', 'title' => 'Registered By'],
-               ['data' => 'created_at', 'name' => 'created_at', 'title' => 'Created On'],
-           ['data' => 'action', 'name' => 'action', 'title' => 'Action'],
-            ]);
-
-        return view('admin.agent.active', compact('html'))->with($data);
    }
 
     /**
      * inactive agents
-     * @param Builder $builder
+     * @param DeactivatedDataTable $dataTable
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function inActiveAgents(Builder $builder){
-
-        $agents = User::withRole('agent')->where('status', 'inactive')->get();
-
-        foreach ($agents as $agent){
-            $agent->registered_by_name = User::getNameFromId($agent->registered_by);
-
-
-        }
-
-        if (request()->ajax()) {
-
-            return DataTables::of($agents)
-                ->addColumn('action', function ($agents) {
-                    return '<a href="/admin/agent/'.$agents->id.'" class="btn btn-xs btn-outline-info"> More Details</a>';
-                })
-                ->editColumn('id', 'ID: {{$id}}')
-                ->toJson();
-        }
+    public function inActiveAgents(DeactivatedDataTable $dataTable){
 
         $data = [
-            'page' => 'Inactive Agents'
+            'page' => 'Deactivated Agent Accounts'
         ];
 
-        $html = $builder->columns([
-            ['data' => 'name', 'name' => 'name', 'title' => 'Name'],
-            ['data' => 'email', 'name' => 'email', 'title' => 'Email'],
-            ['data' => 'status', 'name' => 'status', 'title' => 'Status'],
-            ['data' => 'registered_by_name', 'name' => 'registered_by_name', 'title' => 'Registered By'],
-            ['data' => 'updated_at', 'name' => 'updated_at', 'title' => 'Deactivated On'],
-            ['data' => 'created_at', 'name' => 'created_at', 'title' => 'Created On'],
-            ['data' => 'action', 'name' => 'action', 'title' => 'Action'],
-        ]);
-
-        return view('admin.agent.inactive', compact('html'))->with($data);
+        return $dataTable->render('admin.agent.inactive', $data);
     }
 
     /**
      * all agents
-     * @param Builder $builder
+     * @param AllDataTable $dataTable
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function allAgents(Builder $builder){
-
-        $agents = User::withRole('agent')->get();
-
-        foreach ($agents as $agent){
-            $agent->registered_by_name = User::getNameFromId($agent->registered_by);
-
-
-        }
-
-        if (request()->ajax()) {
-
-            return DataTables::of($agents)
-                ->addColumn('action', function ($agents) {
-                    return '<a href="/admin/agent/'.$agents->id.'" class="btn btn-xs btn-outline-info"> More Details</a>';
-                })
-                ->editColumn('id', 'ID: {{$id}}')
-                ->toJson();
-        }
+    public function allAgents(AllDataTable $dataTable){
 
         $data = [
-            'page' => 'All Agents'
+            'page' => 'Agent Accounts List'
         ];
 
-        $html = $builder->columns([
-            ['data' => 'name', 'name' => 'name', 'title' => 'Name'],
-            ['data' => 'email', 'name' => 'email', 'title' => 'Email'],
-            ['data' => 'status', 'name' => 'status', 'title' => 'Status'],
-            ['data' => 'registered_by_name', 'name' => 'registered_by_name', 'title' => 'Registered By'],
-            ['data' => 'created_at', 'name' => 'created_at', 'title' => 'Created On'],
-            ['data' => 'action', 'name' => 'action', 'title' => 'Action'],
-        ]);
-
-        return view('admin.agent.all', compact('html'))->with($data);
+        return $dataTable->render('admin.agent.all', $data);
     }
 
     /**
+     * agent details
      * @param $id
+     * @return $this
      */
     public function agentsDetails($id){
 
@@ -245,6 +168,7 @@ class AdminController extends Controller
 
     /**
      * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
      */
     public function changeStatus(Request $request){
 

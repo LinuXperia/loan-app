@@ -7,8 +7,16 @@ use App\BorrowerNextOfKin;
 use App\BorrowerPersonalDetails;
 use App\BorrowerResidenceDetails;
 use App\BorrowerWorkDetails;
+use App\DataTables\Accounts\AllDataTable;
+use App\DataTables\Accounts\ApprovedDataTable;
+use App\DataTables\Accounts\BlacklistDataTable;
+use App\DataTables\Accounts\CustomerLoanDataTable;
+use App\DataTables\Accounts\DeclinedDataTable;
+use App\DataTables\Accounts\DormantDataTable;
+use App\DataTables\Accounts\UnapprovedDataTable;
 use App\Http\Requests\Borrower\NextOfKinRequest;
 use App\Loan;
+use App\Mail\CustomerCompleteAccount;
 use App\RefereesDetails;
 use App\Role;
 use App\User;
@@ -17,6 +25,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Borrower\PersonalDetails;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 use Yajra\DataTables\DataTables;
 use Yajra\DataTables\Html\Builder;
 
@@ -65,7 +74,7 @@ class BorrowerController extends Controller
 
         $details = new BorrowerPersonalDetails();
 
-        $details->account = $this->generateAccount();
+        $details->account = $this->generateAccountNumber();
         $details->title = $request->title;
         $details->fname = $request->fname;
         $details->sname = $request->sname;
@@ -515,8 +524,13 @@ class BorrowerController extends Controller
             ], 406);
         }
 
+
+
         $user->complete = true;
         $user->save();
+
+        //send email
+        Mail::to($user)->send(new CustomerCompleteAccount($user));
 
         return response()->json([
 
@@ -528,72 +542,25 @@ class BorrowerController extends Controller
 
     /**
      * customer list view
-     * @param Builder $builder
+     * @param AllDataTable $dataTable
      * @return $this
      */
-    public function customerList(Builder $builder){
-
-        if (request()->ajax()) {
-
-            $model = User::withRole('customer')->get();
-
-            foreach ($model as $m){
-                $m->registered_by = User::registeredBy($m->registered_by);
-                $m->idNumber = User::find($m->id)->borrowerPersonalDetails()->first()->idNumber;
-                $m->account = User::find($m->id)->borrowerPersonalDetails()->first()->account;
-                $m->mobile = User::find($m->id)->borrowerPersonalDetails()->first()->mobile;
-
-            }
-
-            return DataTables::of($model)
-                ->addColumn('action', function ($model) {
-                        return '<a href="details/'.$model->id.'" class="btn btn-xs btn-outline-info"> More Details</a>';
-                    })
-                ->editColumn('id', 'ID: {{$id}}')
-                ->toJson();
-        }
+    public function customerList(AllDataTable $dataTable){
 
         $data = [
             'page' => 'customer list'
         ];
 
-        $html = $builder->columns([
-
-            ['data' => 'account', 'name' => 'account', 'title' => 'Account No.'],
-            ['data' => 'name', 'name' => 'name', 'title' => 'Sur Name'],
-                ['data' => 'email', 'name' => 'email', 'title' => 'Email'],
-                [
-                    'data' => 'idNumber',
-                    'name' => 'idNumber',
-                    'title' => 'ID Number',
-                ],
-                [
-                    'data' => 'complete',
-                    'name' => 'complete',
-                    'title' => 'Complete',
-                    'render' => 'function(){
-                    
-                                     return data == \'1\' ? \'complete\' : \'incomplete\'
-                                }',
-                ],
-                ['data' => 'mobile', 'name' => 'mobile', 'title' => 'Phone No.'],
-
-                ['data' => 'created_at', 'name' => 'created_at', 'title' => 'Created At'],
-                ['data' => 'action', 'name' => 'action', 'title' => 'Action'],
-
-            ]);
-
-        return view('customer.borrowerList')->with(compact('html'))->with($data);
-
+        return $dataTable->render('customer.borrowerList', $data);
     }
 
     /**
      * customer details view
-     * @param Builder $builder
+     * @param CustomerLoanDataTable $dataTable
      * @param $id
      * @return $this
      */
-    public function getCustomerDetails(Builder $builder, $id){
+    public function getCustomerDetails(CustomerLoanDataTable $dataTable, $id){
 
         $personalDetails = User::findOrFail($id)->borrowerPersonalDetails;
         $personalDetails->email = User::findOrFail($id)->email;
@@ -605,40 +572,6 @@ class BorrowerController extends Controller
 
         $customer = User::findOrFail($id);
 
-        if (request()->ajax()) {
-
-            $loan = Loan::where('user_id', $id);
-
-
-            return DataTables::of($loan)
-                ->addColumn('action', function ($loan) {
-                    return '<a href="/customer/'.$loan->user_id . '/loan/'.$loan->id.'" class="btn btn-xs btn-outline-info"> More Details</a>';
-                })
-                ->editColumn('id', 'ID: {{$id}}')
-                ->toJson();
-        }
-
-        $html = $builder->columns([
-
-            ['data' => 'reference_no', 'name' => 'reference_no', 'title' => 'Reference No.'],
-            ['data' => 'amount_borrowed', 'name' => 'amount_borrowed', 'title' => 'Amount Borrowed'],
-            ['data' => 'amount_to_pay', 'name' => 'amount_to_pay', 'title' => 'Amount To Pay'],
-            ['data' => 'duration', 'name' => 'duration', 'title' => 'Duration (months)'],
-            [
-                'data' => 'approved',
-                'name' => 'approved',
-                'title' => 'Approved',
-                'render' => 'function(){
-                    
-                                     return data == \'1\' ? \'Approved\' : \'Not Approved\'
-                                }',
-            ],
-            ['data' => 'status', 'name' => 'status', 'title' => 'Status'],
-            ['data' => 'created_at', 'name' => 'created_at', 'title' => 'Borrowed Date'],
-            ['data' => 'action', 'name' => 'action', 'title' => 'Action'],
-
-        ]);
-
         $data = [
             'page' => 'customer details',
             'personalDetails' => $personalDetails,
@@ -648,8 +581,8 @@ class BorrowerController extends Controller
             'customer' => $customer
         ];
 
+        return $dataTable->with('id',$id)->render('customer.customerDetails', $data);
 
-        return view('customer.customerDetails')->with(compact('html'))->with($data);
     }
 
     /**
@@ -674,6 +607,8 @@ class BorrowerController extends Controller
         $userDetails = borrowerPersonalDetails::where('user_id',$user_id)->first();
         $userDetails->email = User::findOrFail($user_id)->email;
 
+        $loan->loanBalance = Loan::loanBalance($loan_id, $loan->amount_to_pay);
+
         $data = [
             'page' => 'loan details',
             'user_id' => $user_id,
@@ -688,229 +623,76 @@ class BorrowerController extends Controller
 
     /**
      * unapproved customers
-     * @param Builder $builder
+     * @param UnapprovedDataTable $dataTable
      * @return view
      */
-    public function unApprovedCustomer(Builder $builder){
-
-        $users = User::where('approved', null)->withRole('customer')->get();
-
-        foreach ($users as $user){
-
-            $user->registred_by_name = User::getNameFromId($user->registered_by);
-            $user->mobile = $user->borrowerPersonalDetails()->first()->mobile;
-        }
-
-        if (request()->ajax()) {
-
-
-            return DataTables::of($users)
-                ->addColumn('action', function ($users) {
-                    return '<a href="details/'.$users->id.'" class="btn btn-xs btn-outline-info"> More Details</a>';                })
-                ->editColumn('id', 'ID: {{$id}}')
-                ->toJson();
-        }
-
-        $html = $builder->columns([
-
-            ['data' => 'name', 'name' => 'name', 'title' => 'Name'],
-            ['data' => 'email', 'name' => 'email', 'title' => 'Email'],
-            ['data' => 'mobile', 'name' => 'mobile', 'title' => 'Mobile No.'],
-            ['data' => 'registred_by_name', 'name' => 'registred_by_name', 'title' => 'Registered By'],
-            ['data' => 'created_at', 'name' => 'created_at', 'title' => 'Registred On'],
-            ['data' => 'action', 'name' => 'action', 'title' => 'Action'],
-
-        ]);
+    public function unApprovedCustomer(UnapprovedDataTable $dataTable){
 
         $data = [
-            'page' => 'Un approved Customer Accounts',
+            'page' => 'unapproved customer accounts'
         ];
 
-
-        return view('customer.unapproved')->with(compact('html'))->with($data);
+        return $dataTable->render('customer.unapproved', $data);
 
     }
 
 
     /**
      * approved customers
-     * @param Builder $builder
+     * @param ApprovedDataTable $dataTable
      * @return view
      */
-    public function approvedCustomer(Builder $builder){
-
-        $users = User::where('approved', true)->withRole('customer')->get();
-
-        foreach ($users as $user){
-
-            $user->registred_by_name = User::getNameFromId($user->registered_by);
-            $user->mobile = $user->borrowerPersonalDetails()->first()->mobile;
-        }
-
-        if (request()->ajax()) {
-
-
-            return DataTables::of($users)
-                ->addColumn('action', function ($users) {
-                    return '<a href="details/'.$users->id.'" class="btn btn-xs btn-outline-info"> More Details</a>';                })
-                ->editColumn('id', 'ID: {{$id}}')
-                ->toJson();
-        }
-
-        $html = $builder->columns([
-
-            ['data' => 'name', 'name' => 'name', 'title' => 'Name'],
-            ['data' => 'email', 'name' => 'email', 'title' => 'Email'],
-            ['data' => 'mobile', 'name' => 'mobile', 'title' => 'Mobile No.'],
-            ['data' => 'registred_by_name', 'name' => 'registred_by_name', 'title' => 'Registered By'],
-            ['data' => 'created_at', 'name' => 'created_at', 'title' => 'Registred On'],
-            ['data' => 'action', 'name' => 'action', 'title' => 'Action'],
-
-        ]);
+    public function approvedCustomer(ApprovedDataTable $dataTable){
 
         $data = [
-            'page' => 'Approved Customer Accounts',
+            'page' => 'approved customer accounts'
         ];
 
-
-        return view('customer.approved')->with(compact('html'))->with($data);
-
+        return $dataTable->render('customer.approved', $data);
     }
 
     /**
      * declined customers
-     * @param Builder $builder
+     * @param DeclinedDataTable $dataTable
      * @return view
      */
-    public function declinedCustomer(Builder $builder){
-
-        $users = User::where([['status', '=', 'declined'], ['approved', '=', false]])->withRole('customer')->get();
-
-        foreach ($users as $user){
-
-            $user->registred_by_name = User::getNameFromId($user->registered_by);
-            $user->mobile = $user->borrowerPersonalDetails()->first()->mobile;
-        }
-
-        if (request()->ajax()) {
-
-
-            return DataTables::of($users)
-                ->addColumn('action', function ($users) {
-                    return '<a href="details/'.$users->id.'" class="btn btn-xs btn-outline-info"> More Details</a>';                })
-                ->editColumn('id', 'ID: {{$id}}')
-                ->toJson();
-        }
-
-        $html = $builder->columns([
-
-            ['data' => 'name', 'name' => 'name', 'title' => 'Name'],
-            ['data' => 'email', 'name' => 'email', 'title' => 'Email'],
-            ['data' => 'mobile', 'name' => 'mobile', 'title' => 'Mobile No.'],
-            ['data' => 'registred_by_name', 'name' => 'registred_by_name', 'title' => 'Registered By'],
-            ['data' => 'created_at', 'name' => 'created_at', 'title' => 'Registred On'],
-            ['data' => 'action', 'name' => 'action', 'title' => 'Action'],
-
-        ]);
+    public function declinedCustomer(DeclinedDataTable $dataTable){
 
         $data = [
-            'page' => 'Declined Customer Accounts',
+            'page' => 'declined customer accounts'
         ];
 
-
-        return view('customer.declined')->with(compact('html'))->with($data);
+        return $dataTable->render('customer.declined', $data);
 
     }
 
     /**
      * dormant customers
-     * @param Builder $builder
+     * @param DormantDataTable $dataTable
      * @return view
      */
-    public function dormantCustomer(Builder $builder){
-
-        $users = User::where([['status', '=', 'dormant'], ['approved', '=', true]])->withRole('customer')->get();
-
-        foreach ($users as $user){
-
-            $user->registred_by_name = User::getNameFromId($user->registered_by);
-            $user->mobile = $user->borrowerPersonalDetails()->first()->mobile;
-        }
-
-        if (request()->ajax()) {
-
-
-            return DataTables::of($users)
-                ->addColumn('action', function ($users) {
-                    return '<a href="details/'.$users->id.'" class="btn btn-xs btn-outline-info"> More Details</a>';                })
-                ->editColumn('id', 'ID: {{$id}}')
-                ->toJson();
-        }
-
-        $html = $builder->columns([
-
-            ['data' => 'name', 'name' => 'name', 'title' => 'Name'],
-            ['data' => 'email', 'name' => 'email', 'title' => 'Email'],
-            ['data' => 'mobile', 'name' => 'mobile', 'title' => 'Mobile No.'],
-            ['data' => 'registred_by_name', 'name' => 'registred_by_name', 'title' => 'Registered By'],
-            ['data' => 'created_at', 'name' => 'created_at', 'title' => 'Registred On'],
-            ['data' => 'action', 'name' => 'action', 'title' => 'Action'],
-
-        ]);
+    public function dormantCustomer(DormantDataTable $dataTable){
 
         $data = [
-            'page' => 'Dormant Customer Accounts',
+            'page' => 'dormant customer accounts'
         ];
 
-
-        return view('customer.dormant')->with(compact('html'))->with($data);
+        return $dataTable->render('customer.dormant', $data);
 
     }
 
-
     /**
      * blacklisted customers
-     * @param Builder $builder
+     * @param BlacklistDataTable $dataTable
      * @return view
      */
-    public function blacklistedCustomer(Builder $builder){
-
-        $users = User::where('status', 'blacklisted')->withRole('customer')->get();
-
-        foreach ($users as $user){
-
-            $user->registred_by_name = User::getNameFromId($user->registered_by);
-            $user->mobile = $user->borrowerPersonalDetails()->first()->mobile;
-        }
-
-        if (request()->ajax()) {
-
-
-            return DataTables::of($users)
-                ->addColumn('action', function ($users) {
-                    return '<a href="details/'.$users->id.'" class="btn btn-xs btn-outline-info"> More Details</a>';                })
-                ->editColumn('id', 'ID: {{$id}}')
-                ->toJson();
-        }
-
-        $html = $builder->columns([
-
-            ['data' => 'name', 'name' => 'name', 'title' => 'Name'],
-            ['data' => 'email', 'name' => 'email', 'title' => 'Email'],
-            ['data' => 'mobile', 'name' => 'mobile', 'title' => 'Mobile No.'],
-            ['data' => 'registred_by_name', 'name' => 'registred_by_name', 'title' => 'Registered By'],
-            ['data' => 'created_at', 'name' => 'created_at', 'title' => 'Registred On'],
-            ['data' => 'action', 'name' => 'action', 'title' => 'Action'],
-
-        ]);
+    public function blacklistedCustomer(BlacklistDataTable $dataTable){
 
         $data = [
-            'page' => 'Blacklisted Customer Accounts',
+            'page' => 'customer list'
         ];
 
-
-        return view('customer.blacklisted')->with(compact('html'))->with($data);
-
+        return $dataTable->render('customer.blacklisted', $data);
     }
 
 
@@ -1005,7 +787,7 @@ class BorrowerController extends Controller
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function blacklistcustomer(Request $request){
+    public function blacklistCustomer(Request $request){
 
         $customer = User::findOrFail($request->id);
 

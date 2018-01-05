@@ -23,9 +23,9 @@ class BorrowerPersonalDetails extends Model
      * @param $number
      * @return bool
      */
-    protected function ScopeAccountNumberExist($query, $number) {
+    public function scopeAccountNumberExist($query, $number) {
         // query the database and return a boolean
         // for instance, it might look like this in Laravel
-        return $query->whereColumn('account',$number)->first() > 0 ? true : false;
+        return $query->where('account',$number)->count() > 0 ? true : false;
     }
 }

@@ -7,31 +7,23 @@ use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
-/**
- * @property  pdf
- */
-class CustomerCompleteAccount extends Mailable
+class ApprovedPayment extends Mailable
 {
     use Queueable, SerializesModels;
     /**
      * @var
      */
-    public $user;
-
-    private $pdf;
+    public $payment;
 
     /**
      * Create a new message instance.
      *
-     * @param $user
-     * @param $pdf
+     * @param $payment
      */
-    public function __construct($user,$pdf)
+    public function __construct($payment)
     {
-
-        $this->user = $user;
-
-        $this->pdf = $pdf;
+        //
+        $this->payment = $payment;
     }
 
     /**
@@ -43,10 +35,7 @@ class CustomerCompleteAccount extends Mailable
     {
         return $this
             ->from('loans@firstlinecredit.co.ke')
-            ->subject('First Line Credit Account')
-            ->attachData($this->pdf->output(), 'account-details.pdf', [
-                'mime' => 'application/pdf',
-            ])
-            ->markdown('customer.mails.accountComplete');
+            ->subject('Payment Approval')
+            ->markdown('payments.mails.ApprovedPayment');
     }
 }

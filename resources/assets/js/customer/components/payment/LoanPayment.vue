@@ -152,7 +152,7 @@
 
                     //update loan details
 
-                    axios.put('/loans/payment-details-update', {
+                    axios.put('/loans/payment/payment-details-update', {
                         payment_id: this.payment,
                         amount: this.form.amount,
                         mode: this.form.mode,
@@ -177,7 +177,7 @@
                 }else {
 
                     //new loan details
-                    axios.post('/loans/payment-details', {
+                    axios.post('/loans/payment/payment-details', {
                         loan_id: this.loanDetails.id,
                         amount: this.form.amount,
                         mode: this.form.mode,

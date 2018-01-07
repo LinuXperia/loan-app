@@ -4,6 +4,9 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * @property mixed id
+ */
 class Payment extends Model
 {
     protected $fillable = ['reference_no', 'agent','amount','payment_mode','cheque_no','mpesa_no','slug','approved','description'];

@@ -25,12 +25,6 @@ Your Account has successfully been created with First Line Credit waiting for ap
 
 @endcomponent
 
-@component('mail::table')
-    | Pin.          | DOB        | Marital Status  | Education     | Nationality    |
-    | :------------- |:-------------:| :--------:|:--------:|:--------:|
-    | {{ $pin }}      | {{ $dob }}      | {{ $marital }}     |  {{ $education }}   |   {{ $nationality }} |
-
-@endcomponent
 
 Thanks,<br>
 {{ config('app.name') }}

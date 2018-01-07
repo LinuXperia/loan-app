@@ -2,6 +2,7 @@
 
 namespace App\DataTables\Payments;
 
+use App\Payment;
 use Yajra\DataTables\Services\DataTable;
 
 class DeclinedDataTable extends DataTable

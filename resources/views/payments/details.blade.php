@@ -127,24 +127,23 @@
                         </div>
                     </div>
                     <div class="row loan-details">
-                        <div class="col-sm-6">
+                        <div class="col-sm-12">
                             <div class="row">
-                                <div class="col-sm-3">
+                                <div class="col-sm-2">
                                     <h5 class="text-dark" style="margin-top: 5%"><Strong class="title">REMARKS: </Strong> </h5>
 
                                 </div>
-                                <div class="col-sm-9">
+                                <div class="col-sm-10">
                                     <div class="alert alert-light">{{ $payment->description }}</div>
                                 </div>
                             </div>
                         </div>
-                        <div class="col-sm-6"></div>
                     </div>
 
                     <hr>
                     <div class="row loan-details">
                         <div class="col-sm-4 offset-4">
-                            <a href="#"  class="btn btn-outline-secondary btn-block">Print Payment Details</a>
+                            <a href="{{ route('download.loan.payment.details', ['id' => $payment->id]) }}"  class="btn btn-outline-secondary btn-block">Download Loan Payment Details</a>
                         </div>
                     </div>
 

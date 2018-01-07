@@ -78,6 +78,13 @@
             </div>
         </div>
     </div>
+    <div class="row mt-3">
+        <div class="col-sm-6 offset-3">
+            <div class="card bg-default text-center">
+                <a href="{{ route('download.account.details',['id' => $personalDetails->user_id]) }}" class="btn btn-primary">Download Account Details</a>
+            </div>
+        </div>
+    </div>
 
     @role('admin')
         <div class="row">

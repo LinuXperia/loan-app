@@ -390,7 +390,7 @@
                             @role('agent')
                                 <a href="{{ route('loan.payment', ['id' => $loan->id]) }}" class="btn btn-outline-info btn-block">Add Payment</a>
                             @endrole
-                            <a href="#"  class="btn btn-outline-secondary btn-block">Print Loan Details</a>
+                            <a href="{{ route('download.loan.details', ['id' => $loan->id]) }}"  class="btn btn-outline-secondary btn-block">Download Loan Details</a>
                         </div>
                     </div>
 

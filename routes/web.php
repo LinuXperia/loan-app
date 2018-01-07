@@ -11,6 +11,8 @@
 |
 */
 
+use Barryvdh\DomPDF\Facade as PDF;
+
 Route::get('/', function () {
     return view('welcome');
 })->name('welcome');
@@ -19,20 +21,8 @@ Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
 
-
 //change password
 Route::post('/change-password','HomeController@changePassword')->name('agent.changePassword');
-
-
-//test send email
-
-Route::get('/send-email', function (){
-
-    $user = \App\User::findOrFail(13);
-
-    return new App\Mail\CustomerCompleteAccount($user);
-});
-
 
 /**
 ===============================================================================
@@ -170,6 +160,9 @@ Route::group(/**
     //blacklist customer
     Route::put('/blacklist-customer', 'BorrowerController@blacklistCustomer')->middleware('role:admin')->name('blacklist.customer');
 
+    //download customer details
+    Route::get('/download-account-details/{id}','BorrowerController@downloadAccountDetails')->name('download.account.details');
+
 });
 
 /**
@@ -210,6 +203,9 @@ Route::group(['prefix' => 'loans', 'namespace' => 'Loans', 'middleware' => 'auth
     //unapproved payments list
     Route::get('/unapproved','LoansController@unapprovedLoans')->middleware('role:admin')->name('unapproved.loans');
 
+    //download loan details
+    Route::get('/download-loan-details/{id}', 'LoansController@downloadLoanDetails')->name('download.loan.details');
+
     Route::group(['prefix' => 'payment'], function (){
         //loan payment
         Route::get('/payment/{id}', 'LoansController@loanPayment')->name('loan.payment');
@@ -237,6 +233,9 @@ Route::group(['prefix' => 'loans', 'namespace' => 'Loans', 'middleware' => 'auth
 
         //loan payments details
         Route::get('/details/{id}', 'LoansController@paymentDetails')->name('payment.detials');
+
+        //download loan payment details
+        Route::get('/download-loan-payment-details/{id}', 'LoansController@downloadLoanPaymentDetails')->name('download.loan.payment.details');
     });
 
 });

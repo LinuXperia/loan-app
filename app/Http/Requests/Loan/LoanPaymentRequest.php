@@ -4,6 +4,9 @@ namespace App\Http\Requests\Loan;
 
 use Illuminate\Foundation\Http\FormRequest;
 
+/**
+ * @property mixed payment_id
+ */
 class LoanPaymentRequest extends FormRequest
 {
     /**

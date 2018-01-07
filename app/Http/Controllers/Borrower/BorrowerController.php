@@ -16,6 +16,7 @@ use App\DataTables\Accounts\DormantDataTable;
 use App\DataTables\Accounts\UnapprovedDataTable;
 use App\Http\Requests\Borrower\NextOfKinRequest;
 use App\Loan;
+use App\Mail\CustomerAccountApproved;
 use App\Mail\CustomerCompleteAccount;
 use App\RefereesDetails;
 use App\Role;
@@ -24,10 +25,9 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Borrower\PersonalDetails;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
-use Yajra\DataTables\DataTables;
-use Yajra\DataTables\Html\Builder;
+use Barryvdh\DomPDF\Facade as PDF;
+
 
 class BorrowerController extends Controller
 {
@@ -524,13 +524,12 @@ class BorrowerController extends Controller
             ], 406);
         }
 
-
-
         $user->complete = true;
         $user->save();
 
+        $pdf = PDF::loadView('customer.pdf.accountDetails', ['user' => $user]);
         //send email
-        Mail::to($user)->send(new CustomerCompleteAccount($user));
+        Mail::to($user)->send(new CustomerCompleteAccount($user, $pdf));
 
         return response()->json([
 
@@ -729,6 +728,12 @@ class BorrowerController extends Controller
         $customer->status = $request->status;
         $customer->save();
 
+         if($customer->approved == true && $customer->status == 'active'){
+             //send approved account email
+
+             Mail::to($customer)->send(new CustomerAccountApproved($customer));
+         }
+
         return response()->json([
             'success' => [
                 'approved' => [
@@ -757,6 +762,15 @@ class BorrowerController extends Controller
                 ]
             ], 406);
         }
+        if($customer->complete == false){
+            return response()->json([
+                'errors' => [
+                    'approved' => [
+                        'This customer account is not complete for approval.'
+                    ]
+                ]
+            ], 406);
+        }
 
         $approved = '';
 
@@ -768,6 +782,7 @@ class BorrowerController extends Controller
 
             $approved = $customer->approved;
         }
+
 
         $customer->approved = $approved;
         $customer->status = $request->status;
@@ -823,6 +838,24 @@ class BorrowerController extends Controller
                 ]
             ]
         ], 200);
+    }
+
+
+    /**
+     * download account details
+     * @param $id
+     */
+    public function downloadAccountDetails($id){
+
+        $user = User::findOrFail($id);
+
+        if(!$user){
+            return back()->withError('No User found');
+        }
+
+        $pdf = PDF::loadView('customer.pdf.accountDetails', ['user' => $user]);
+
+        return $pdf->download($user->name . '_account_details.pdf');
     }
 
 

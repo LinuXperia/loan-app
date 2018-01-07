@@ -13,6 +13,10 @@ use App\DataTables\Payments\AllDataTable as AllPaymentDataTable;
 use App\DataTables\Payments\DeclinedDataTable as DeclinedPaymentDataTable;
 use App\DataTables\Payments\ApprovedDataTable as ApprovedPaymentDataTable;
 use App\Loan;
+use App\Mail\ApprovedLoan;
+use App\Mail\ApprovedPayment;
+use App\Mail\NewLoan;
+use App\Mail\NewPayment;
 use App\Payment;
 use App\User;
 use Carbon\Carbon;
@@ -20,9 +24,10 @@ use DateTime;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
-use Intervention\Image\Facades\Image;
 use Webpatser\Uuid\Uuid;
+use Barryvdh\DomPDF\Facade as PDF;
 
 class LoansController extends Controller
 {
@@ -133,6 +138,9 @@ class LoansController extends Controller
             $loanDetails->reference_no = 'LOAN/'. date('Y') . '/' . date('m'). '/' . date('d') . '/' . (1000 + $loanDetails->id);
             $loanDetails->save();
         }
+
+        $pdf = PDF::loadView('loans.pdf.loanDetails', ['loan' => $loanDetails]);
+        Mail::to($customer)->send(new NewLoan($loanDetails, $pdf));
 
         return response()->json([
             'data' => $loanDetails->id
@@ -379,7 +387,8 @@ class LoansController extends Controller
         $afterPayment = Payment::loanBalance($loan->id, $loan->amount_to_pay);
 
         //send confirm email waiting payment approval
-
+        $pdf = PDF::loadView('payments.pdf.paymentDetails', ['payment' => $payment]);
+        Mail::to($payment->loan->user)->send(new NewPayment($payment, $pdf));
 
         return response()->json([
             'data' => [
@@ -392,7 +401,6 @@ class LoansController extends Controller
     /**
      * update loan payment details
      * @param LoanPaymentRequest $request
-     * @param $id
      * @return \Illuminate\Http\JsonResponse
      */
     public function updatePaymentDetails(LoanPaymentRequest $request){
@@ -477,6 +485,7 @@ class LoansController extends Controller
 
 
         //TODO:send loan approve email
+        Mail::to($loan->user)->send(new ApprovedLoan($loan));
 
         return response()->json([
             'success' => [
@@ -616,10 +625,46 @@ class LoansController extends Controller
         $loan->status = $status;
         $loan->save();
 
+        Mail::to($loan->user)->send(new ApprovedPayment($payment));
+
         return response()->json([
             'success' => [
                 'approved'  => ['This payment has been approved and updated. refresh page to confirm']
             ]
         ], 200);
+    }
+
+    /**
+     * download loan details
+     * @param $id
+     */
+    public function downloadLoanDetails($id){
+
+        $loan = Loan::findOrFail($id);
+
+        if(!$loan){
+            return back()->withError('No loan found');
+        }
+
+        $pdf = PDF::loadView('loans.pdf.loanDetails', ['loan' => $loan]);
+
+        return $pdf->download($loan->user->name . '_loan_details.pdf');
+    }
+
+    /**
+     * download loan details
+     * @param $id
+     */
+    public function downloadLoanPaymentDetails($id){
+
+        $payment = Payment::findOrFail($id);
+
+        if(!$payment){
+            return back()->withError('No payment found');
+        }
+
+        $pdf = PDF::loadView('payments.pdf.paymentDetails', ['payment' => $payment]);
+
+        return $pdf->download($payment->loan->user->name .'_loan_payment_details.pdf');
     }
 }

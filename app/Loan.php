@@ -2,9 +2,9 @@
 
 namespace App;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
-use PhpParser\Builder;
 
 class Loan extends Model
 {
@@ -51,5 +51,54 @@ class Loan extends Model
         return $total_loan - $totalPayed ;
 
 
+    }
+
+    /**
+     *get total daily loan
+     * @param $query
+     * @return
+     */
+    public function scopeDailyLoan($query){
+
+        return $query->where([['approved', '=', true ], ['created_at', '>=', Carbon::today()]])->sum('amount_borrowed');
+    }
+
+    /**
+     *get total daily approved loan
+     * @param $query
+     * @return
+     */
+    public function scopeDailyApprovedLoans($query){
+
+        return $query->where([['approved', '=', true ], ['created_at', '>=', Carbon::today()]])->count();
+    }
+
+    /**
+     * total un approved loans
+     * @param $query
+     * @return mixed
+     */
+    public function scopeUnapprovedLoans($query){
+
+        return $query->where('approved', null)->count();
+    }
+
+    /**
+     * daily Amount by Agent
+     * @param $query
+     * @param $id
+     */
+    public function scopeDailyAmountByAgent($query, $id){
+        return $query->where([['agent' ,'=', $id], ['approved','=', true], ['created_at', '>=', Carbon::today()]])->sum('amount_borrowed');
+    }
+
+    /**
+     * daily Amount count by Agent
+     * @param $query
+     * @param $id
+     */
+    public function scopeDailyAmountCountByAgent($query, $id){
+
+        return $query->where([['agent' ,'=', $id], ['approved','=', true], ['created_at', '>=', Carbon::today()]])->count();
     }
 }

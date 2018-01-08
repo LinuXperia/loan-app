@@ -9,10 +9,10 @@
                 Customers Service
             </li>
             <li class="nav-item nav-dropdown">
-                <a class="nav-link nav-dropdown-toggle" href="#"><i class="icon-emotsmile"></i> Account Details</a>
+                <a class="nav-link nav-dropdown-toggle" href="#"><i class="icon-emotsmile"></i> Account Details @if($unapprovedAccounts > 0)<span class="badge badge-primary">NEW</span> @endif</a>
                 <ul class="nav-dropdown-items">
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ route('unapproved.customers') }}"><i class="icon-dislike"></i>New Accounts</a>
+                        <a class="nav-link" href="{{ route('unapproved.customers') }}"><i class="icon-dislike"></i>New Accounts <span class="badge badge-primary">{{ $unapprovedAccounts }}</span></a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('approved.customers') }}"><i class="icon-like"></i> Approved Accounts</a>
@@ -33,10 +33,10 @@
             </li>
 
             <li class="nav-item nav-dropdown">
-                <a class="nav-link nav-dropdown-toggle" href="#"><i class="icon-grid"></i> Loan Details</a>
+                <a class="nav-link nav-dropdown-toggle" href="#"><i class="icon-grid"></i> Loan Details @if($unapprovedLoans > 0)<span class="badge badge-success">NEW</span> @endif</a>
                 <ul class="nav-dropdown-items">
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ route('unapproved.loans') }}"><i class="icon-dislike"></i> New Loans</a>
+                        <a class="nav-link" href="{{ route('unapproved.loans') }}"><i class="icon-dislike"></i> New Loans <span class="badge badge-success">{{ $unapprovedLoans }}</span></a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('approved.loans') }}"><i class="icon-like"></i> Approved Loans</a>
@@ -51,10 +51,10 @@
             </li>
 
             <li class="nav-item nav-dropdown">
-                <a class="nav-link nav-dropdown-toggle" href="#"><i class="icon-paypal"></i> Payment Details</a>
+                <a class="nav-link nav-dropdown-toggle" href="#"><i class="icon-paypal"></i> Payment Details @if($unapprovedPayments > 0)<span class="badge badge-warning">NEW</span> @endif</a>
                 <ul class="nav-dropdown-items">
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ route('unapproved.payments') }}"><i class="icon-credit-card"></i> New Payments</a>
+                        <a class="nav-link" href="{{ route('unapproved.payments') }}"><i class="icon-credit-card"></i> New Payments <span class="badge badge-warning">{{ $unapprovedPayments }}</span></a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('approved.payments') }}"><i class="icon-eye"></i> Approved Payments</a>

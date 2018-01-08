@@ -1,6 +1,6 @@
 <template>
     <div class="row">
-        <div class="col-sm-10 offset-1">
+        <div class="col-sm-12 ">
             <horizontal-stepper
                     :steps="customerSteps"
                     :top-buttons="true"
@@ -22,6 +22,7 @@
     import ResidenceDetails from './Residence.vue';
     import WorkDetails from './WorkDetails.vue';
     import RefereeDetails from './RefereesDetails.vue';
+    import FileUploads from './FileUploads.vue';
     import EndForm from './EndRegistration.vue';
     export default{
         components: {
@@ -85,6 +86,17 @@
                         completed: false
 
                     },
+
+                    {
+                        icon: 'backup',
+                        name: 'Uploads',
+                        title: 'File Uploads',
+                        subtitle: 'Account File Uploads',
+                        component: FileUploads,
+                        completed: false
+
+                    },
+
                     {
                         icon: 'close',
                         name: 'seven',

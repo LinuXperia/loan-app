@@ -18,6 +18,21 @@ class ComposerServiceProvider extends ServiceProvider
         View::composer(
             'customer.partial._loan_details', 'App\Http\ViewComposers\LoanDetailsComposer'
         );
+
+        View::composer(
+            'admin.layouts.partials._loanStatistics', 'App\Http\ViewComposers\LoanStatisticsComposer'
+        );
+
+        //admin sidebar view composer
+        View::composer(
+            'admin.layouts.partials.sidebar', 'App\Http\ViewComposers\SideBarComposer'
+        );
+
+        //agent sidebar view composer
+        View::composer(
+            'agent.layout.partials._statistics', 'App\Http\ViewComposers\AgentStatisticsComposer'
+        );
+
     }
 
     /**

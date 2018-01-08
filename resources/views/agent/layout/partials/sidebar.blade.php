@@ -26,14 +26,6 @@
             <li class="nav-item">
                 <a class="nav-link" href="{{ route('loans.index') }}"><i class="icon-plus"></i> New Loan</a>
             </li>
-
-            <li class="nav-title">
-                Loan Payment
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#"><i class="icon-plus"></i> New Payment</a>
-            </li>
-
             <li class="divider"></li>
             <li class="nav-title">
                 Account Details

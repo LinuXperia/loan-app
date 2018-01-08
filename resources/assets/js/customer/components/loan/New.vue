@@ -1,5 +1,4 @@
 <template>
-
     <div class="card-body">
         <div class="row">
             <div class="col-sm-12">
@@ -193,7 +192,7 @@
             </div>
         </div>
         <hr class="style4">
-        <uploads :loan = "loan"></uploads>
+        <uploads :loan = "loan" v-if=" loan !== ''"></uploads>
     </div>
 </template>
 <script>

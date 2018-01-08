@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers\Teller;
 
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\User;
 use Illuminate\Support\Facades\Auth;
-use Zizaco\Entrust\Entrust;
+use Yajra\DataTables\DataTables;
+use Yajra\DataTables\Html\Builder;
 
 class TellerController extends Controller
 {
@@ -16,16 +17,75 @@ class TellerController extends Controller
     }
 
     /**
-    * Returns Dashboard
-    **/
-    public function index(){
-
-
+     * Returns Dashboard
+     * @param Builder $builder
+     * @return $this
+     */
+    public function index(Builder $builder){
 
         $data = [
-            'page' => ''
+            'page' => 'dashboard'
         ];
-        return view('agent.index',$data);
+
+        $users =  User::where('registered_by', Auth::user()->id)->withRole('customer')->get();
+
+        foreach ($users as $user){
+
+            $user->mobile = $user->borrowerPersonalDetails()->first()->mobile;
+            $user->account = $user->borrowerPersonalDetails()->first()->account;
+        }
+
+        if (request()->ajax()) {
+
+            return Datatables::of($users)
+                ->addColumn('action', function ($model) {
+                    return '<a href="/customer/details/'.$model->id.'" class="btn btn-xs btn-outline-info"> More Details</a>';
+                })
+                ->make(true);
+        }
+
+        $html = $builder->columns([
+            [
+                'name' => 'account',
+                'title' => 'Account No.',
+                'data' => 'account'
+            ],
+            [
+                'name' => 'name',
+                'title' => 'Name',
+                'data' => 'name'
+            ],
+            [
+                'name' => 'mobile',
+                'title' => 'Mobile No.',
+                'data' => 'mobile'
+            ],
+            [
+                'name' => 'approved',
+                'title' => 'Approved',
+                'data' => 'approved',
+                'render' => 'function(){
+                                return data == null ? \'Not Approved \' : \'Approved\'
+                            }'
+            ],
+            [
+                'name' => 'status',
+                'title' => 'Status',
+                'data' => 'status'
+            ],
+            [
+                'name' => 'created_at',
+                'title' => 'Registered On',
+                'data' => 'created_at'
+            ],
+            [
+                'name' => 'action',
+                'title' => 'Action',
+                'data' => 'action'
+            ],
+        ]);
+
+        return view('agent.index', compact('html'))->with($data);
     }
 
     /**

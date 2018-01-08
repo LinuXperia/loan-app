@@ -2,6 +2,7 @@
 
 namespace App;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -39,5 +40,53 @@ class Payment extends Model
 
         return $user->payments()->sum('amount');
 
+    }
+
+    /**
+     *get total daily payment
+     * @param $query
+     * @return
+     */
+    public function scopeDailyPayment($query){
+
+        return $query->where([['approved', '=', true ], ['created_at', '>=', Carbon::today()]])->sum('amount');
+    }
+
+    /**
+     *get total daily approved payment
+     * @param $query
+     * @return
+     */
+    public function scopeDailyApprovedPayments($query){
+
+        return $query->where([['approved', '=', true ], ['created_at', '>=', Carbon::today()]])->count();
+    }
+
+    /**
+     * total unapproved payments
+     * @param $query
+     * @return mixed
+     */
+    public function scopeUnapprovedPayments($query){
+
+        return $query->where('approved', null)->count();
+    }
+
+    /**
+     * daily Amount by Agent
+     * @param $query
+     * @param $id
+     */
+    public function scopeDailyAmountByAgent($query, $id){
+        return $query->where([['agent' ,'=', $id], ['approved','=', true], ['created_at', '>=', Carbon::today()]])->sum('amount');
+    }
+
+    /**
+     * daily Amount count by Agent
+     * @param $query
+     * @param $id
+     */
+    public function scopeDailyAmountCountByAgent($query, $id){
+        return $query->where([['agent' ,'=', $id], ['approved','=', true], ['created_at', '>=', Carbon::today()]])->count();
     }
 }

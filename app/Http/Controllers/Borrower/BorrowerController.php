@@ -21,12 +21,17 @@ use App\Mail\CustomerCompleteAccount;
 use App\RefereesDetails;
 use App\Role;
 use App\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Borrower\PersonalDetails;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use Barryvdh\DomPDF\Facade as PDF;
+use Intervention\Image\ImageManagerStatic as Image;
+use Illuminate\Http\File;
+use Illuminate\Support\Facades\Storage;
+
 
 
 class BorrowerController extends Controller
@@ -499,6 +504,38 @@ class BorrowerController extends Controller
 
     }
 
+    /**
+     * Account Uploads
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function accountUploads(Request $request){
+
+        $request->validate([
+            'image' => 'required',
+            'upload' => 'required'
+        ]);
+
+        $imageName = $request->upload.'.png';
+
+        $img = Image::make($request->get('image'))->encode('png', 100);
+
+        $user = User::findOrFail($request->id);
+
+        $path = storage_path(). '/app/uploads/account/'. $user->borrowerPersonaldetails->account .'/';
+
+        if (!file_exists($path)) {
+            mkdir($path, 0777, true);
+        }
+
+        \File::put($path . $imageName, $img);
+
+        return response()->json([
+            'success' => [
+                'upload' => ['file uploaded successfully.']
+            ],
+        ], 200);
+    }
 
     /**
      * complete customers profile

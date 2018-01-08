@@ -4,22 +4,16 @@ namespace App\Http\ViewComposers;
 
 use App\Loan;
 use App\Payment;
-use App\Repositories\UserRepository;
-use App\User;
-use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 
 class LoanDetailsComposer
 {
 
-    /**
-     * @var UserRepository
-     */
+
 
     /**
      * Create a new profile composer.
      *
-     * @param $user_id
      */
     public function __construct()
     {

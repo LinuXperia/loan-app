@@ -88,7 +88,7 @@
             </div>
         </div>
         <hr class="style4">
-       <!-- <uploads :loan = "loan"></uploads>-->
+        <uploads :payment = "payment" v-if="payment !== '' && form.mode == 'cheque'"></uploads>
     </div>
 </template>
 <script>

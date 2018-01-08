@@ -2,18 +2,32 @@
     <div>
         <div class="row mt-4"  >
             <div class="col-sm-12">
-                <h5 class="text-center">Loan File Uploads</h5>
+                <h5 class="text-center">Loan Payment Files Upload</h5>
             </div>
         </div>
         <div class="row mt-4"  >
-            <div class="col-sm-3">
-                <label for="">Detail One <span class="badge badge-danger">*</span></label>
+            <div class="col-sm-4">
+                <select v-model="upload" class="form-control" v-bind:class="{ 'is-invalid': errors.upload }">
+                    <option value="cheque">CHEQUE IMAGE</option>
+                </select>
+                <small class="invalid-feedback" v-if="errors.upload">
+                    {{ errors.upload[0] }}
+                </small>
             </div>
-            <div class="col-sm-7">
-                <input type="file" v-on:change="onFileChange" class="form-control">
+            <div class="col-sm-4">
+                <input type="file" @change="onFileChange" id="image" class="form-control" v-bind:class="{ 'is-invalid': errors.image }">
+                <small class="invalid-feedback" v-if="errors.image">
+                    {{ errors.image[0] }}
+                </small>
+            </div>
+
+            <div class="col-sm-2">
+                <button class="btn btn-success btn-block" @click="submit">Upload</button>
             </div>
             <div class="col-sm-2">
-                <button class="btn btn-success btn-block" @click="upload">Upload</button>
+                <div class="upload-complete"v-if="saved">
+                    <i class="fa fa-thumbs-up "></i>
+                </div>
             </div>
         </div>
     </div>
@@ -21,11 +35,14 @@
 <script>
 
     export default{
-        props: ['loan'],
+        props: ['payment'],
         data(){
             return{
-                image: '',
-                errors:[]
+                saved: false,
+                errors:[],
+                disabled: false,
+                image:null,
+                upload:'cheque'
             }
         },
         methods: {
@@ -45,17 +62,30 @@
                 };
                 reader.readAsDataURL(file);
             },
-            upload(){
-                console.log(this.image)
-                /*axios.post('/loans/upload',{
-                    image: this.image,
-                    loan_id: this.loan
-                }).
-                then(response => {
-                    console.log(response)
-                }).catch(error => {
-                    console.log(error)
-                });*/
+            submit(){
+                let self = this
+
+                axios.post('/loans/payment/loan-payments-uploads', {
+                    id : self.payment,
+                    upload:self.upload,
+                    image: self.image
+                })
+                    .then(function (response) {
+
+                        self.saved = true
+                        self.errors = []
+                        self.image = null
+
+                        document.getElementById("image").value = "";
+
+
+                    })
+                    .catch(function (error) {
+
+                        self.errors = error.response.data.errors
+
+
+                    });
             }
         }
     }
@@ -63,6 +93,15 @@
 <style scoped lang="scss">
     .mt-4{
         margin-top:4%;
+    }
+    .upload-complete  i{
+
+        margin-top: -4px;
+        font-size: 35px;
+        border: 1px solid;
+        border-radius: 50%;
+        padding: 5px 7px;
+        color: #4dbd74;
     }
 
 </style>

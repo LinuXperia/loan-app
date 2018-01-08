@@ -6,12 +6,15 @@ use App\AgentDetails;
 use App\DataTables\Agents\ActiveDataTable;
 use App\DataTables\Agents\AllDataTable;
 use App\DataTables\Agents\DeactivatedDataTable;
+use App\Loan;
 use App\Mail\SendAgentAccountDetails;
 use App\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
+use Yajra\DataTables\DataTables;
+use Yajra\DataTables\Html\Builder;
 
 /**
  * Class AdminController
@@ -27,14 +30,48 @@ class AdminController extends Controller
 
     /**
      * return dashboard
-    **/
-    public function index(){
+     * @param Builder $builder
+     * @return $this
+     */
+    public function index(Builder $builder){
 
         $data = [
             'page' => 'dashboard'
         ];
 
-        return view('admin.index')->with($data);
+        $loans = Loan::where('approved',null)->limit(5);
+
+        if (request()->ajax()) {
+
+            return Datatables::of($loans)
+                ->addColumn('action', function ($model) {
+                    return '<a href="/customer/' . $model->user_id .'/loan/'.$model->id.'" class="btn btn-xs btn-outline-info"> More Details</a>';
+                })
+                ->make(true);
+        }
+
+        $html = $builder->columns([
+            ['data' => 'reference_no', 'name' => 'reference_no', 'title' => 'Reference No.'],
+            [
+                'data' => 'amount_borrowed',
+                'name' => 'amount_borrowed',
+                'title' => 'Amount',
+                'render' => 'function(){
+                    return "ksh." + data.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                }'
+            ],
+            [
+                'data' => 'amount_to_pay',
+                'name' => 'amount_to_pay',
+                'title' => 'Total Amount',
+
+            ],
+            ['data' => 'status', 'name' => 'status', 'title' => 'Loan Status'],
+            ['data' => 'created_at', 'name' => 'created_at', 'title' => 'Applied On'],
+            ['data' => 'action', 'name' => 'action', 'title' => 'Action'],
+            ]);
+
+        return view('admin.index', compact('html'))->with($data);
    }
 
     /**

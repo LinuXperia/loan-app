@@ -121,14 +121,13 @@ Route::group(/**
     //post customer referees details
     Route::post('/customer-referees-details', 'BorrowerController@refereesDetails')->middleware('role:agent')->name('customer.refereesDetails');
 
+    //post customer uploads
+    Route::post('/account-uploads','BorrowerController@accountUploads')->name('account.uploads');
     //post customer referees details
     Route::post('/complete-profile', 'BorrowerController@completeProfile')->middleware('role:agent')->name('customer.completeProfile');
 
     //customer list view
     Route::get('/list-of-customers', 'BorrowerController@customerList')->name('customer.list');
-
-    //customer list
-    //Route::get('/get-customer-list', 'BorrowerController@getCustomerList')->name('getcustomerList');
 
     //customer Details
     Route::get('/details/{id}', 'BorrowerController@getCustomerDetails')->name('customer.details');
@@ -186,7 +185,7 @@ Route::group(['prefix' => 'loans', 'namespace' => 'Loans', 'middleware' => 'auth
     Route::post('/loan-details-update', 'LoansController@updateLoanDetails')->name('loan.update.details');
 
     //loan upload
-    Route::post('/upload', 'LoansController@fileUpload')->name('loan.fileUpload');
+    Route::post('/loan-uploads', 'LoansController@loanFileUpload')->name('loan.fileUpload');
 
     //approve loan
     Route::put('/approve-loan','LoansController@approveLoan')->middleware('role:admin')->name('approve.loan');
@@ -215,6 +214,9 @@ Route::group(['prefix' => 'loans', 'namespace' => 'Loans', 'middleware' => 'auth
 
         //update loan payment
         Route::put('/payment-details-update', 'LoansController@updatePaymentDetails')->name('loan.update.payment');
+
+        //upload loan payment cheque
+        Route::post('/loan-payments-uploads', 'LoansController@paymentUploads')->name('loan.payment.uploads');
 
         //unapproved payments list
         Route::get('/unapproved', 'LoansController@unapprovedPayments')->middleware('role:admin')->name('unapproved.payments');

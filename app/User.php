@@ -103,4 +103,14 @@ class User extends Authenticatable
         return $query->where('id',$id)->first()->name;
     }
 
+    /**
+     * total unapproved accounts
+     * @param $query
+     * @return mixed
+     */
+    public function scopeUnapprovedAccounts($query){
+
+        return $query->where('approved', null)->withRole('customer')->count();
+    }
+
 }

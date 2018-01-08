@@ -26,6 +26,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
+use Intervention\Image\Facades\Image;
 use Webpatser\Uuid\Uuid;
 use Barryvdh\DomPDF\Facade as PDF;
 
@@ -208,36 +209,41 @@ class LoansController extends Controller
      * @return \Illuminate\Http\JsonResponse
      * @internal param $ |Request $request
      */
-    public function fileUpload(Request $request){
+    public function loanFileUpload(Request $request){
 
-        if(!$request->loan_id){
+        if(!$request->id){
             return response()->json([
-                'error' => 1,
-                'message' => 'error no loan id'
+                'errors' => [
+                    'upload' => ['error no loan id']
+                ]
+
             ], 406);
         }
 
-        $loan = Loan::findOrFail($request->loan_id);
-
-        //validate
         $request->validate([
-            'image' => 'required'
+            'image' => 'required',
+            'upload' => 'required'
         ]);
 
-        $image = $request->get('image');
+        $imageName = $request->upload.'.png';
 
-        $path = 'public/firstLine/customer/loan/'.$loan->user_id . '/' . $loan->slug;
+        $img = Image::make($request->get('image'))->encode('png', 100);
 
-        if (!is_dir($path)){
+        $loan = Loan::findOrFail($request->id);
 
-            Storage::makeDirectory($path);
+        $path = storage_path(). '/app/uploads/loans/'. $loan->user->borrowerPersonaldetails->account .'/'.$loan->id.'/';
+
+        if (!file_exists($path)) {
+            mkdir($path, 0777, true);
         }
 
+        \File::put($path . $imageName, $img);
 
-        $location = Storage::putFileAs(
-            $path, $image, 'test.png'
-        );
-
+        return response()->json([
+            'success' => [
+                'upload' => ['file uploaded successfully.']
+            ],
+        ], 200);
     }
 
     /**
@@ -458,6 +464,47 @@ class LoansController extends Controller
         ], 200);
     }
 
+    /**
+     *Loan Payment uploads
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function paymentUploads(Request $request){
+
+        if(!$request->id){
+            return response()->json([
+                'errors' => [
+                    'upload' => ['error no payment id']
+                ]
+
+            ], 406);
+        }
+
+        $request->validate([
+            'image' => 'required',
+            'upload' => 'required'
+        ]);
+
+        $imageName = $request->upload.'.png';
+
+        $img = Image::make($request->get('image'))->encode('png', 100);
+
+        $payment = Payment::findOrFail($request->id);
+
+        $path = storage_path(). '/app/uploads/payments/'. $payment->loan->user->borrowerPersonaldetails->account.'/'.$payment->loan->id.'/' .'/'.$payment->id.'/';
+
+        if (!file_exists($path)) {
+            mkdir($path, 0777, true);
+        }
+
+        \File::put($path . $imageName, $img);
+
+        return response()->json([
+            'success' => [
+                'upload' => ['file uploaded successfully.']
+            ],
+        ], 200);
+    }
 
     /**
      * approve loan

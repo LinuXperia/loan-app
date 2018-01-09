@@ -21,6 +21,9 @@
                 <li class="nav-item">
                     <a class="nav-link" data-toggle="tab" href="#loan" role="tab" aria-controls="loan"><i class="icon-credit-card"></i> Loan Details</a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-toggle="tab" href="#files" role="tab" aria-controls="loan"><i class="icon-paper-clip"></i> Account Files</a>
+                </li>
             </ul>
 
             <div class="tab-content">
@@ -29,10 +32,26 @@
                         <div class="card-header">
                             <strong>Customer Personal Details</strong>
                         </div>
+                        <div class="row">
+                            <div class="col-sm-4 text-center">
+
+                                @if(file_exists(storage_path().'/app/public/uploads/avatars/' . $personalDetails->user_id . '.png'))
+
+                                    <img src="{{ asset('storage/uploads/avatars/' . $personalDetails->user_id . '.png') }}" class="img-thumbnail mt-2" style="width: 40%" alt="">
+                                @else
+                                    <img src="/img/default-avatar.png" alt="" class="img-thumbnail mt-2" style="width: 40%">
+                                @endif
+                            </div>
+
+                            <div class="col-sm-4">
+                                <avatar-upload customer-id="{{$personalDetails->user_id }}"></avatar-upload>
+                            </div>
+                        </div>
+                        <hr>
 
                         <personal-details
-                                personal-details = "{{ $personalDetails }}"                        >
-
+                            personal-details = "{{ $personalDetails }}"
+                        >
                         </personal-details>
                     </div>
                 </div>
@@ -71,6 +90,44 @@
                                 <div class="col-sm-12">
                                     {!! $dataTable->table(['class' => 'table table-responsive-sm table-striped'], false) !!}
                                 </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tab-pane" id="files" role="tabpanel">
+                    <div class="card">
+                        <div class="card-header">
+                            <strong>Account Files</strong>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-sm-3">
+                                    <h6 class="text-center">ID CARD IMAGE</h6>
+                                    @if(file_exists(storage_path().'/app/public/uploads/account/' . $personalDetails->account . '/idcard.png'))
+                                        <a
+                                            href="{{asset('storage/uploads/account/' . $personalDetails->account . '/idcard.png') }}"
+                                            download="{{ $personalDetails->account }}_id_card">
+                                            <img src="{{asset('storage/uploads/account/' . $personalDetails->account . '/idcard.png') }}" class="img-thumbnail" alt="">
+                                        </a>
+                                    @else
+                                        <p class="text-center"> No ID Card Image</p>
+                                    @endif
+                                </div>
+                                <div class="col-sm-3">
+                                    <h6 class="text-center">PIN CERTIFICATE</h6>
+                                    @if(file_exists(storage_path().'/app/public/uploads/account/' . $personalDetails->account . '/pin.png'))
+                                        <a
+                                                href="{{asset('storage/uploads/account/' . $personalDetails->account . '/pin.png') }}"
+                                                download="{{ $personalDetails->account }}_id_card">
+                                            <img src="{{asset('storage/uploads/account/' . $personalDetails->account . '/pin.png') }}" class="img-thumbnail" alt="">
+                                        </a>
+                                    @else
+                                        <p class="text-center"> No Pin Certificate</p>
+                                    @endif
+                                </div>
+                                <div class="col-sm-3"></div>
+                                <div class="col-sm-3"></div>
                             </div>
                         </div>
                     </div>

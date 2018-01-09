@@ -6,13 +6,7 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-sm-2">
-                <img src="/img/default.png" alt="" class="img-thumbnail"><br>
-            </div>
-            <div class="col-sm-4">
-                <input type="file">
-            </div>
-            <div class="col-sm-6">
+            <div class="col-sm-8 offset-2">
                 <div class="alert alert-success text-center" v-if="data.status === 'active' && data.approved !== null ">
                    <strong><i class="icon-check"></i></strong> Account Is <strong>Active</strong>!
                 </div>
@@ -179,17 +173,55 @@
 <script>
     import * as helper from '../../../helpers'
     export default{
-        props: ['personalDetails'],
+        props: ['personalDetails', 'avatarImg'],
 
         data(){
             return {
                 data: '',
                 disabled: true,
                 errors:[],
-                saved: false
+                saved: false,
+                avatar: ''
             }
         },
         methods: {
+            uploadAvatar(e){
+                var files = e.target.files || e.dataTransfer.files;
+                if (!files.length)
+                    return;
+                this.createImage(files[0]);
+            },
+            createImage(file) {
+
+                var reader = new FileReader();
+
+                reader.onload = (e) => {
+                    this.avatar = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            },
+            changeAvatar(){
+
+                let self = this
+
+                axios.post('/customer/upload-avatar', {
+                    id:self.data.user_id,
+                    avatar: self.avatar
+                })
+                .then(function (response) {
+
+                    self.saved = true
+                    self.errors = []
+
+                    document.getElementById("avatar").value = "";
+
+                })
+                .catch(function (error) {
+
+                    self.errors = error.response.data.errors
+
+                });
+            },
             convetToJson(){
                 this.data = JSON.parse(this.personalDetails)
             },
@@ -239,12 +271,11 @@
         mounted(){
 
             this.convetToJson();
-
         }
     }
 </script>
 <style scoped>
-    /*.img-thumbnail {
-        max-width: 40%;
-    }*/
+    .img-thumbnail {
+        max-width: 65%;
+    }
 </style>

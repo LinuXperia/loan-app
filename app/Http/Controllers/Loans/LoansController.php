@@ -231,7 +231,7 @@ class LoansController extends Controller
 
         $loan = Loan::findOrFail($request->id);
 
-        $path = storage_path(). '/app/uploads/loans/'. $loan->user->borrowerPersonaldetails->account .'/'.$loan->id.'/';
+        $path = storage_path(). '/app/public/uploads/loans/'. $loan->user->borrowerPersonaldetails->account .'/'.$loan->id.'/';
 
         if (!file_exists($path)) {
             mkdir($path, 0777, true);
@@ -491,7 +491,7 @@ class LoansController extends Controller
 
         $payment = Payment::findOrFail($request->id);
 
-        $path = storage_path(). '/app/uploads/payments/'. $payment->loan->user->borrowerPersonaldetails->account.'/'.$payment->loan->id.'/' .'/'.$payment->id.'/';
+        $path = storage_path(). '/app/public/uploads/payments/'. $payment->loan->user->borrowerPersonaldetails->account.'/'.$payment->loan->id.'/' .'/'.$payment->id.'/';
 
         if (!file_exists($path)) {
             mkdir($path, 0777, true);

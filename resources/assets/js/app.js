@@ -31,6 +31,8 @@ Vue.component('personal-details', require('./customer/components/show/PersonalDe
 Vue.component('next-of-kin-details', require('./customer/components/show/NextOfKinDetails.vue'))
 Vue.component('bank-details', require('./customer/components/show/BankDetails.vue'))
 
+Vue.component('avatar-upload', require('./customer/components/show/AvatarUpload.vue'))
+
 //customer loan details
 Vue.component('loan-details', require('./customer/components/loan/New.vue'))
 

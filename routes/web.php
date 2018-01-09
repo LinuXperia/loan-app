@@ -123,6 +123,7 @@ Route::group(/**
 
     //post customer uploads
     Route::post('/account-uploads','BorrowerController@accountUploads')->name('account.uploads');
+
     //post customer referees details
     Route::post('/complete-profile', 'BorrowerController@completeProfile')->middleware('role:agent')->name('customer.completeProfile');
 
@@ -131,6 +132,9 @@ Route::group(/**
 
     //customer Details
     Route::get('/details/{id}', 'BorrowerController@getCustomerDetails')->name('customer.details');
+
+    //upload avatar
+    Route::post('/upload-avatar','BorrowerController@uploadAvatar')->name('upload.avatar');
 
     //customer loan details
     Route::get('/{user_id}/loan/{loan_id}','BorrowerController@getCustomerLoanDetails')->name('customer.loanDetails');

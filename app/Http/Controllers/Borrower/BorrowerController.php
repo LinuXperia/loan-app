@@ -522,7 +522,7 @@ class BorrowerController extends Controller
 
         $user = User::findOrFail($request->id);
 
-        $path = storage_path(). '/app/uploads/account/'. $user->borrowerPersonaldetails->account .'/';
+        $path = storage_path(). '/app/public/uploads/account/'. $user->borrowerPersonaldetails->account .'/';
 
         if (!file_exists($path)) {
             mkdir($path, 0777, true);
@@ -577,6 +577,36 @@ class BorrowerController extends Controller
     }
 
     /**
+     * upload customer avatar
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function uploadAvatar(Request $request){
+
+        $request->validate([
+            'avatar' => 'required',
+        ]);
+
+        $imageName = $request->id.'.png';
+
+        $img = Image::make($request->get('avatar'))->resize(240, 240)->encode('png', 100);
+
+        $path = storage_path(). '/app/public/uploads/avatars/';
+
+        if (!file_exists($path)) {
+            mkdir($path, 0777, true);
+        }
+
+        \File::put($path . $imageName, $img);
+
+        return response()->json([
+            'success' => [
+                'upload' => ['file uploaded successfully.']
+            ],
+        ], 200);
+    }
+
+    /**
      * customer list view
      * @param AllDataTable $dataTable
      * @return $this
@@ -614,7 +644,7 @@ class BorrowerController extends Controller
             'nextOfKinDetails' => $nextOfKinDetails,
             'bankDetails' => $bankDetails,
             'user_id' => $personalDetails->user_id,
-            'customer' => $customer
+            'customer' => $customer,
         ];
 
         return $dataTable->with('id',$id)->render('customer.customerDetails', $data);

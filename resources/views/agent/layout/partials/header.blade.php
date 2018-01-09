@@ -23,10 +23,10 @@
             <div class="dropdown-menu dropdown-menu-right">
 
                 <div class="dropdown-header text-center">
-                    <strong>Admin Account</strong>
+                    <strong>Agent Account</strong>
                 </div>
 
-                <a class="dropdown-item" href="#"><i class="fa fa-user"></i>Profile</a>
+                <a class="dropdown-item" href="{{route('agent.profile')}}"><i class="fa fa-user"></i>Profile</a>
                 <div class="divider"></div>
                 <a class="dropdown-item" href="{{ url('/logout') }}" onclick="event.preventDefault();
                                                      document.getElementById('logout-form').submit();"><i class="fa fa-lock"></i> Logout</a>
